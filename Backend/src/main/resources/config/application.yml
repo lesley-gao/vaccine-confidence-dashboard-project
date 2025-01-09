@@ -1,34 +1,23 @@
 server:
   port: 8050
-  url: http://127.0.0.1
 
 spring:
+  profiles:
+    active: loc # 切换环境配置
   application:
-    name: movie-review-system
-  jackson:
-    time-zone: GMT+8
-    date-format: yyyy-MM-dd HH:mm:ss
+    name: vaccine-safety-confidence
+  mybatis-plus:
+    configuration:
+      # MyBatis 配置
+      map-underscore-to-camel-case: true
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
-#  mybatis-plus:
-#    configuration:
-#      # MyBatis 配置
-#      map-underscore-to-camel-case: true
   servlet:
     multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
-  datasource: # mysql数据库连接
-    type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://8.138.179.126:3306/miles_vax_confidence?createDatabaseIfNotExist=true
-    username: root
-    password: 90Miles2024
-#  sql:
-#    init:
-#      schema-locations: classpath:sql/schema.sql
-#      mode: always
+      max-file-size: 5MB
+      max-request-size: 5MB
 
-swagger:
-  enabled: true
+#  国际化（i18n）消息资源文件配置
+#  messages:
+#    basename: i18n/messages # 消息资源文件位于 classpath:/i18n/ 目录下，文件名的前缀是 messages。

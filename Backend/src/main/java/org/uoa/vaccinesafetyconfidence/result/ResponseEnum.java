@@ -15,6 +15,12 @@ public enum ResponseEnum {
 
 
     // Custom Error
+    NO_ENTITY_ERROR(3001, "No such entity"),
+    TABLE_EMPTY_ERROR(3002, "Currently no record in the table"),
+
+
+
+
     LOGIN_AUTH_ERROR(2001, "User not login."),
     ENTITY_NOT_FOUND_ERROR(2002, "Entity not found."),
     ILLEGAL_NAME_ERROR(2003, "Illegal naming pattern."),

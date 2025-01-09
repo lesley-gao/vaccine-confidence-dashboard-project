@@ -1,30 +1,32 @@
-import { useState } from "react";
-import Sidebar from "./components/Sidebar";
+import React from "react";
+import { useLocation } from "react-router-dom";
+import SidebarContainer from "./components/SidebarContainer";
 import Menubar from "./components/Menubar";
+import { Outlet } from "react-router-dom"; 2
 
-export default function MainLayout({ children }) {
+export default function MainLayout() {
+    const location = useLocation();
 
-    const [activeEntry, setactiveEntry] = useState("Dashboard");
+    const activeItemMap = {
+        "/dashboard": "Dashboard",
+        "/map": "Map",
+        "/survey": "Survey",
+        "/socialmedia": "Social Media",
+        "/profile": "Profile",
+    };
+
+    const activeItem = activeItemMap[location.pathname] || "Dashboard";
 
     return (
+        <div className="grid grid-cols-[auto_1fr] min-h-screen bg-gray-100">
+            {/* Sidebar with dynamic width */}
+            <SidebarContainer />
 
-        <div className="flex h-auto bg-stone-200">
-
-            {/* Sidebar */}
-            <Sidebar activeEntry={activeEntry} setActiveEntry={setactiveEntry} />
-
-            {/* Main Content */}
-            <div className="flex-1">
-
-                <div className="flex flex-col p-3 gap-3">
-
-                    {/* Menubar */}
-                    <Menubar activeItem={activeEntry} />
-
-                    {/* Render the specific page */}
-                    <div>
-                        {children}
-                    </div>
+            {/* Main content */}
+            <div className="flex flex-col p-3 gap-3">
+                <Menubar activeItem={activeItem} />
+                <div>
+                    <Outlet />
                 </div>
             </div>
         </div>

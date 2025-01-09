@@ -4,11 +4,7 @@ import lombok.Data;
 
 @Data
 public class VaccineVO {
-
-
-    private Integer vacId;
-
+    private Integer vacIdPk;
     private String vacType;
-    private String vacEfficacy;
-    private Integer vacSevereCases;
+
 }

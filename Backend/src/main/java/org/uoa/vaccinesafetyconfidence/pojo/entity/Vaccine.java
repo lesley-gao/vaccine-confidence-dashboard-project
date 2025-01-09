@@ -9,7 +9,7 @@ import lombok.Data;
 @TableName("`VACCINE_T`")
 public class Vaccine {
     @TableId(value = "vac_id_pk", type = IdType.AUTO)
-    private Integer vacId;
+    private Integer vacIdPk;
     private String vacType;
     private String vacEfficacy;
     private Integer vacSevereCases;

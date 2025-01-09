@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 
+
 @ServletComponentScan
 @SpringBootApplication
 @MapperScan("org.uoa.vaccinesafetyconfidence.mapper")
