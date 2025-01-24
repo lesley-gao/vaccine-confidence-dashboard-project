@@ -22,7 +22,6 @@ export default function SettingsDrawer({ toggleColorMode }) {
     const toggleDrawer = (newOpen) => () => {
         setOpen(newOpen);
         if (!newOpen) {
-            // Move focus back to the settings icon
             document.querySelector('.settings-icon').focus();
         }
     };

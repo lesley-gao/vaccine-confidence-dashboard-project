@@ -2,10 +2,11 @@
 // It allows the user to input their username, email, password and confirm password
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import Input from '../../../components/Input'
+import Input from '@/components/Input'
 import { FormProvider, useForm } from 'react-hook-form';
-import { username_validation, email_validation, password_validation, confirm_password_validation } from '../../../utils/inputValidations'
+import { username_validation, email_validation, password_validation, confirm_password_validation } from '@/utils/inputValidations'
 import { BsFillCheckSquareFill } from 'react-icons/bs'
+import { postData } from '@/utils/api';
 
 export default function SignupForm() {
 
@@ -15,49 +16,44 @@ export default function SignupForm() {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const onSubmit = methods.handleSubmit(data => {
-        console.log(data)
-        methods.reset()
-        setSuccess(true)
+    // Submit form and handle registration
+    const onSubmit = methods.handleSubmit(async (data) => {
+        try {
+            setIsLoading(true);
+            setError('');
 
-    })
+            // Check if passwords match
+            if (data.password !== data.cPassword) {
+                throw new Error("Passwords don't match");
+            }
 
-    // TODO: add detailed logic, such as below, to navigate to login page
-    // const onSubmit = methods.handleSubmit(async (data) => {
-    //     try {
-    //         setIsLoading(true);
-    //         setError('');
+            // Registration data
+            const registrationData = {
+                userUsername: data.username,
+                userEmail: data.email,
+                userPassword: data.password,
+                userAvatarPath: "/avatars/avatar1.jpg"  
+            };
+            console.log("Registration data:", registrationData)
 
-    //         // 验证密码匹配
-    //         if (data.password !== data.confirm_password) {
-    //             throw new Error("Passwords don't match");
-    //         }
+            // Send registration data to the server 
+            const response = await postData('/user/register', registrationData);
 
-    //         // 构建注册数据
-    //         const registrationData = {
-    //             username: data.username,
-    //             email: data.email,
-    //             password: data.password
-    //         };
-
-    //         // TODO: 发送到后端注册
-    //         // const response = await registerUser(registrationData);
-
-    //         setSuccess(true);
-    //         methods.reset();
-
-    //         // 延迟后跳转到登录页
-    //         setTimeout(() => {
-    //             navigate('/login');
-    //         }, 2000);
-
-    //     } catch (error) {
-    //         setError(error.message || 'Registration failed');
-    //         console.error('Registration error:', error);
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // });
+            if (response.code === 0) {
+                console.log("Registration successful! Redirecting to login page...");
+                setSuccess(true);
+                methods.reset();
+                setTimeout(() => navigate("/login"), 2000);
+            } else {
+                throw new Error(response.message || "Registration failed");
+            }
+        } catch (error) {
+            console.log(error.message || 'Registration failed');
+            console.error('Registration error:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    });
 
     return (
         <div className="text-md 2xl:text-lg">
@@ -68,7 +64,7 @@ export default function SignupForm() {
                     autoComplete="off"
                     className="container"
                 >
-                    <div className="flex flex-col gap-5 mb-5 2xl:mb-5">
+                    <div className="flex flex-col gap-3 mb-5 2xl:mb-5">
                         <Input {...username_validation} />
                         <Input {...email_validation} />
                         <Input {...password_validation} />

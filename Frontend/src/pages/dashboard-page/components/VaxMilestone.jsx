@@ -4,13 +4,19 @@
 import React, { useState, useEffect } from 'react';
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
-import { useAppContext } from "@/context/AppContextProvider.jsx";
+import { fetchData } from '@/utils/api.js'
+import DataSource from './DataSource';
+import { useVaccine } from '@/hooks/useVaccine';
 
-export default function VaxMilestone() {
+export default function VaxMilestone({ selectedVaccine }) {
 
     const [milestones, setMilestones] = useState([]);
     const [loading, setLoading] = useState(false);
-    const { selectedVaccine, fetchData } = useAppContext();
+
+    const dataSource = {
+        websiteName: "ESR",
+        URL: "https://www.esr.cri.nz/expertise/public-health/infectious-disease-intelligence-surveillance/",
+    };
 
     useEffect(() => {
         const getMilestones = async () => {
@@ -19,7 +25,7 @@ export default function VaxMilestone() {
             setLoading(true);
             try {
                 const data = await fetchData(`/vaccine/vacDevMilestone/vacId?vaccineId=${selectedVaccine.vaccineId}`);
-                console.log('Fetched milestones:', data);
+                console.log('Fetched vaccine timeline:', data);
                 if (data && Array.isArray(data)) {
                     setMilestones(data);
                 }
@@ -32,63 +38,74 @@ export default function VaxMilestone() {
         };
 
         getMilestones();
-    }, [selectedVaccine]); // re-fetch milestones when the selected vaccine changes
+    }, [selectedVaccine]);
 
     if (loading) {
         return (
-            <div className="h-full flex items-center justify-center bg-gray-50 border-2 border-white rounded-xl">
+            <div className="h-full flex items-center justify-center">
                 <div className="text-gray-500">Loading milestone data...</div>
             </div>
         );
     }
 
     return (
-        <div className="h-full flex flex-col bg-gray-50 border-2 border-white rounded-xl shadow-[2px_2px_4px_rgba(0,0,0,0.15)]">
-
-            {/* title */}
-            <div className="flex-none p-4">
-                <h1 className="text-xl font-bold font-PoppinsBold">Vaccine Development</h1>
+        <div className="h-full flex flex-col">
+            <div className="flex flex-row">
+                <h1 className="p-4 text-xl font-bold font-PoppinsBold">Vaccine Milestones</h1>
+                <DataSource dataSource={dataSource} />
             </div>
 
-            {/* content */}
-            <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="flex-1 overflow-y-auto min-h-0 scrollbar-hide">
                 <div className="relative px-4">
-                    {milestones.length > 0 ? (
-                        <VerticalTimeline className="vertical-timeline-custom">
+                    {milestones.length === 0 ? (
+                        <div className="flex items-center justify-center h-full">
+                            <p className="text-slate-700">No milestone data available for this vaccine.</p>
+                        </div>
+                    ) : milestones.length === 1 ? (
+                        <p>
+                            <span className="text-xl font-bold">{milestones[0].vdmYear}</span> : {milestones[0].vdmDescription}
+                        </p>
+                    ) : (
+                        <VerticalTimeline className="custom-timeline" layout="1-column-left">
                             {milestones.slice().reverse().map((milestone, index) => (
                                 <VerticalTimelineElement
                                     key={index}
-                                    className="vertical-timeline-element"
-                                    date={milestone.vdmYear}
+                                    className="vertical-timeline-element custom-timeline-element"
+                                    position="right"
                                     iconStyle={{
                                         background: 'linear-gradient(180deg, #3E62AD, #789DBC)',
                                         color: '#fff',
                                         width: '24px',
                                         height: '24px',
-                                        margin: '4px 0 0 -12px'
+                                        margin: '4px 0 0 -12px',
                                     }}
                                     contentStyle={{
                                         background: '#f9f9f9',
                                         color: '#333',
-                                        border: '1px solid #3A1078',
+                                        border: '1px solid gray',
                                         borderRadius: '8px',
                                         padding: '15px',
-                                        boxShadow: 'none'
+                                        marginLeft: '40px',
+                                        marginRight: '0',
                                     }}
-                                    contentArrowStyle={{ borderRight: '7px solid #3A1078'}}
+                                    contentArrowStyle={{
+                                        borderRight: '7px solid #3A1078',
+                                    }}
+                                    dateClassName="timeline-date"
                                 >
-                                    <p className="text-sm">{milestone.vdmDescription}</p>
+                                    <div className="timeline-content">
+                                        <span className="font-bold text-[#152063] block text-xl">
+                                            {milestone.vdmYear}
+                                        </span>
+                                        <p className="text-sm">{milestone.vdmDescription}</p>
+                                    </div>
                                 </VerticalTimelineElement>
-                    ))}
+                            ))}
                         </VerticalTimeline>
-                        ) : (
-                        <div className="flex items-center justify-center h-full">
-                            <p className="text-gray-500">No milestone data available for this vaccine.</p>
-                        </div>
+
                     )}
                 </div>
             </div>
         </div>
     );
 }
-

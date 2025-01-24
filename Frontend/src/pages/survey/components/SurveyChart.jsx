@@ -1,9 +1,7 @@
 // This component is the bar chart on the survey page
 // It displays the result of survey question 
-
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Label } from 'recharts';
-import { Card } from '@/components/ui/card';
 
 export default function SurveyChart({ data, selectedDemoType, year, question }) {
 
@@ -11,15 +9,15 @@ export default function SurveyChart({ data, selectedDemoType, year, question }) 
     const getAxisLabels = () => {
         switch (selectedDemoType) {
             case 'Age':
-                return { y: 'Age Group', x: 'Percentage of Respondents' };
+                return { y: 'Age Group', x: 'Percentage of Respondents Who Agree' };
             case 'Education':
-                return { y: 'Education Level', x: 'Percentage of Respondents' };
+                return { y: 'Education Level', x: 'Percentage of Respondents Who Agree' };
             case 'Gender':
-                return { y: 'Gender', x: 'Percentage of Respondents' };
+                return { y: 'Gender', x: 'Percentage of Respondents Who Agree' };
             case 'Religion':
-                return { y: 'Religion', x: 'Percentage of Respondents' };
+                return { y: 'Religion', x: 'Percentage of Respondents Who Agree' };
             default:
-                return { y: 'Category', x: 'Percentage of Respondents' };
+                return { y: 'Category', x: 'Percentage of Respondents Who Agree' };
         }
     };
 
@@ -28,9 +26,9 @@ export default function SurveyChart({ data, selectedDemoType, year, question }) 
     const hasValidData = data && data.length > 0 && data.some(item => item.agree_percent !== null && item.agree_percent !== 0);
 
     return (
-        <div className="p-4 w-full h-full border border-gray-400 bg-white bg-opacity-60 rounded-xl">
+        <div className="p-4 w-full h-full bg-white bg-opacity-60 rounded-xl">
 
-            <h3 className="text-lg font-semibold mb-2">{`${year} Survey Results by ${selectedDemoType}`}</h3>
+            <h3 className="text-lg font-semibold mb-2 text-indigo-900">{`${year} Survey Results by ${selectedDemoType}`}</h3>
             <p className="text-sm mb-4 text-gray-600">"{question}"</p>
 
             {/* Add padding to accommodate the axis labels */}

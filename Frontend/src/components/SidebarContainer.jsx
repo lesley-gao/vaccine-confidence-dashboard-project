@@ -1,7 +1,6 @@
 // This is the compoment that displays the sidebar of the dashboard page.
 // When the user hovers over the sidebar, the sidebar expands to show the full list of links.
 // When the user moves the mouse away from the sidebar, the sidebar collapses to show only the icons.
-
 import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import MiniSidebar from "./MiniSidebar";
@@ -13,7 +12,7 @@ export default function SidebarContainer() {
 
     return (
         <div
-            className="relative"
+            className="relative "
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

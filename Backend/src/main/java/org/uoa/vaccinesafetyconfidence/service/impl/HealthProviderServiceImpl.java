@@ -1,5 +1,6 @@
 package org.uoa.vaccinesafetyconfidence.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +20,17 @@ import java.util.List;
 @Service
 public class HealthProviderServiceImpl implements HealthProviderService {
     @Autowired
-    HealthProviderVaccineMapper healthProviderVaccineMapper;
+    private HealthProviderVaccineMapper healthProviderVaccineMapper;
 
     @Autowired
-    HealthProviderMapper healthProviderMapper;
+    private HealthProviderMapper healthProviderMapper;
 
     @Autowired
     private VaccineMapper vaccineMapper;
 
 
     @Override
-    public List<HealthProvider> getHealthProviders(Integer vaccineId) {
+    public List<HealthProvider> searchHealthProvidersById(Integer vaccineId){
         // 检查要查询的疫苗是否存在
         Vaccine vaccine = vaccineMapper.selectById(vaccineId);
         if (vaccine == null){
@@ -51,4 +52,33 @@ public class HealthProviderServiceImpl implements HealthProviderService {
         List<HealthProvider> healthProviderList = healthProviderMapper.selectByIds(healthProviderUuids);
         return healthProviderList;
     }
+
+
+    public List<HealthProvider> getAllHealthProviders(){
+        return healthProviderMapper.selectList(null);
+    }
+
+    @Override
+    public List<HealthProvider> searchHealthProvidersByType(String healthProviderType) {
+
+        LambdaQueryWrapper<HealthProvider> healthProviderLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        healthProviderLambdaQueryWrapper.eq(HealthProvider::getHpType, healthProviderType);
+        List<HealthProvider> healthProviderList = healthProviderMapper.selectList(healthProviderLambdaQueryWrapper);
+
+        if (healthProviderList.size() == 0)
+            throw new BusinessException(ResponseEnum.WRONG_HEALTH_PROVIDER_TYPE_ERROR);
+        return healthProviderList;
+    }
+
+    @Override
+    public List<String> getHealthProviderTypes() {
+
+
+        LambdaQueryWrapper<HealthProvider> healthProviderLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        healthProviderLambdaQueryWrapper.select(HealthProvider::getHpType).groupBy(HealthProvider::getHpType);
+
+        return healthProviderMapper.selectObjs(healthProviderLambdaQueryWrapper);
+    }
+
+
 }

@@ -1,33 +1,35 @@
 // This component displays a list of medical centers. It uses the SingleMedicalCenter component to display each center.
 import React, { useState, useEffect } from 'react';
 import SingleMedicalCenter from './SingleMedicalCenter.jsx';
-import { useAppContext } from "@/context/AppContextProvider.jsx";
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { BiChevronRight, BiChevronLeft } from "react-icons/bi";
 
-export default function MedicalCentersList() {
-    const { isLoading, filteredLocations, searchedLocations, isSearchActive } = useAppContext();
+export default function MedicalCentersList({ onCenterSelect, locations, isLoading }) {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [displayedLocations, setDisplayedLocations] = useState([]);
+    const [selectedCenterId, setSelectedCenterId] = useState(null);
     const ITEMS_PER_PAGE = 10;
 
-    // Determine which locations to display
-    const locationsToDisplay = isSearchActive ? searchedLocations : filteredLocations;
+    // Handle center selection
+    const handleCenterSelect = (center) => {
+        setSelectedCenterId(center.hpUuidPk);
+        onCenterSelect(center);
+    };
 
     // Count total pages
-    const totalPages = Math.ceil(locationsToDisplay.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(locations.length / ITEMS_PER_PAGE);
 
-    // Update displayed locations when currentPage or locationsToDisplay change
+    // Update displayed locations when currentPage or locations change
     useEffect(() => {
         const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
         const endIndex = startIndex + ITEMS_PER_PAGE;
-        setDisplayedLocations(locationsToDisplay.slice(startIndex, endIndex));
+        setDisplayedLocations(locations.slice(startIndex, endIndex));
 
         // Reset to first page when locations change
-        if (currentPage > 1 && startIndex >= locationsToDisplay.length) {
+        if (currentPage > 1 && startIndex >= locations.length) {
             setCurrentPage(1);
         }
-    }, [currentPage, locationsToDisplay]);
+    }, [currentPage, locations]);
 
     // Handle page change
     const handlePageChange = (newPage) => {
@@ -48,14 +50,15 @@ export default function MedicalCentersList() {
                         key={center.hpUuidPk}
                         name={center.hpName}
                         adress={center.hpAddress}
-                        onDetailsClick={() => console.log(`Viewing details for ${center.hpName}`)}
+                        isSelected={selectedCenterId === center.hpUuidPk}
+                        onDetailsClick={() => onCenterSelect(center)}
                     />
                 ))}
             </div>
 
             {/* Pagination controls */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200">
+                <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
                     <div className="flex items-center">
                         <p className="text-sm text-gray-700">
                             Showing{' '}
@@ -64,16 +67,15 @@ export default function MedicalCentersList() {
                             </span>
                             {' '}-{' '}
                             <span className="font-medium">
-                                {Math.min(currentPage * ITEMS_PER_PAGE, locationsToDisplay.length)}
+                                {Math.min(currentPage * ITEMS_PER_PAGE, locations.length)}
                             </span>
                             {' '}of{' '}
-                            <span className="font-medium">{locationsToDisplay.length}</span>
+                            <span className="font-medium">{locations.length}</span>
                             {' '}results
                         </p>
                     </div>
 
                     <div className="flex items-center space-x-2">
-                        {/* Previous page button */}
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
@@ -82,14 +84,12 @@ export default function MedicalCentersList() {
                                 : 'text-gray-600 hover:bg-gray-100'
                                 }`}
                         >
-                            <ChevronLeft className="w-5 h-5" />
+                            <BiChevronLeft className="w-5 h-5" />
                         </button>
 
-                        {/* Page number buttons */}
                         <div className="flex space-x-1">
                             {[...Array(totalPages)].map((_, index) => {
                                 const pageNumber = index + 1;
-
                                 if (
                                     pageNumber === 1 ||
                                     pageNumber === totalPages ||
@@ -108,7 +108,6 @@ export default function MedicalCentersList() {
                                         </button>
                                     );
                                 }
-                                // display ellipsis when there are more than 5 pages
                                 if (
                                     (pageNumber === currentPage - 3 && pageNumber > 2) ||
                                     (pageNumber === currentPage + 3 && pageNumber < totalPages - 1)
@@ -120,18 +119,15 @@ export default function MedicalCentersList() {
                             })}
                         </div>
 
-                        {/* Next page button */}
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
                             className={`p-2 rounded-md ${currentPage === totalPages
                                 ? 'text-gray-400 cursor-not-allowed'
                                 : 'text-gray-600 hover:bg-gray-100'
-                                }`}
-                        >
-                            <ChevronRight className="w-5 h-5" />
+                                }`}>
+                            <BiChevronRight className="w-5 h-5" />
                         </button>
-
                     </div>
                 </div>
             )}

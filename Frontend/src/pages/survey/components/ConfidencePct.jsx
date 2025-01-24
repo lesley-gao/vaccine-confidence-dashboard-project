@@ -1,5 +1,4 @@
 // This is a confidence percentage component that displays a percentage value with a circular progress bar.
-
 import React, { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 
@@ -39,13 +38,13 @@ export default function ConfidencePct({ percentage, size }) {
                     {/* Define gradient */}
                     <defs>
                         <linearGradient id="progressGradient" gradientTransform="rotate(90)">
-                            {/* <stop offset="0%" stopColor="#818cf8" />
+                            <stop offset="0%" stopColor="#818cf8" />
                             <stop offset="50%" stopColor="#60a5fa" />
-                            <stop offset="100%" stopColor="#2dd4bf" /> */}
-                            <stop offset="0%" stopColor="#A8B4FF" /> {/* 最亮的浅蓝色 */}
-                            <stop offset="33%" stopColor="#6674DB" /> {/* 明亮的中蓝色 */}
-                            <stop offset="66%" stopColor="#3949AB" /> {/* 主题色light */}
-                            <stop offset="100%" stopColor="#152063" /> {/* 主题色dark */}
+                            <stop offset="100%" stopColor="#2dd4bf" />
+                            {/* <stop offset="0%" stopColor="#A8B4FF" />  
+                            <stop offset="33%" stopColor="#6674DB" />  
+                            <stop offset="66%" stopColor="#3949AB" />  
+                            <stop offset="100%" stopColor="#152063" />   */}
                         </linearGradient>
                     </defs>
 
@@ -79,10 +78,7 @@ export default function ConfidencePct({ percentage, size }) {
                 {/* Animated percentage text */}
                 <div
                     className="absolute inset-0 flex items-center justify-center text-4xl font-semibold"
-                    style={{
-                        transform: 'rotate(0deg)',
-                        color: '#3949AB'
-                    }}>
+                    style={{ transform: 'rotate(0deg)', color: '#3949AB' }}>
                     {Math.round(animatedPercentage)}%
                 </div>
             </div>

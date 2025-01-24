@@ -1,8 +1,10 @@
-import Footer from "@/components/Footer";
+// import Footer from "@/components/Footer";
+import Footer from "./components/Footer";
 import HeroSection from "./components/HeroSection";
 import OverviewSection from "./components/OverviewSection";
 import { BorderBeam } from "@/components/ui/border-beam";
 import Ripple from "@/components/ui/ripple";
+import FAQs from  "./components/FAQS";
 
 
 export default function HomePage() {
@@ -16,7 +18,7 @@ export default function HomePage() {
             <div className="relative h-auto overflow-hidden flex">
             
             <div
-            className="mt-20 ml-14 mr-14 p-16 bg-white/50 rounded-lg shadow-lg backdrop-blur-lg border border-white/40"
+            className="my-20 mx-14 p-16 bg-white/50 rounded-lg shadow-lg backdrop-blur-lg border border-white/40"
             style={{
                 boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
             }}
@@ -24,7 +26,8 @@ export default function HomePage() {
             
             <BorderBeam />
             <OverviewSection />
-        </div>
+            <FAQs />
+            </div>
 
             </div>
         </div>

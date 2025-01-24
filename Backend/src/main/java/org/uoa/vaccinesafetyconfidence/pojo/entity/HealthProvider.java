@@ -29,4 +29,7 @@ public class HealthProvider {
 
     @TableField(value = "hp_latitude")
     private double hpLatitude;
+
+    @TableField(value = "hp_type")
+    private String hpType;
 }

@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import SidebarContainer from "./components/SidebarContainer";
 import Menubar from "./components/Menubar";
-import { Outlet } from "react-router-dom"; 2
+import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
+
     const location = useLocation();
+    const [currentVaccine, setCurrentVaccine] = useState(null);
 
     const activeItemMap = {
         "/dashboard": "Dashboard",
@@ -24,9 +26,9 @@ export default function MainLayout() {
 
             {/* Main content */}
             <div className="flex flex-col p-3 gap-3">
-                <Menubar activeItem={activeItem} />
+                <Menubar activeItem={activeItem} onVaccineSelect={setCurrentVaccine} />
                 <div>
-                    <Outlet />
+                    <Outlet context={{ currentVaccine }} />
                 </div>
             </div>
         </div>

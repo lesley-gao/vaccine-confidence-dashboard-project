@@ -51,7 +51,7 @@ const features = [
           <div>
             <img
               className="absolute [mask-image:linear-gradient(to_top,transparent_20%,#000_100%)] "
-              src="src/assets/ViewData.png" 
+              src="/image/ViewData.png" 
               alt="ViewSurveyResults"
             />
           </div>
@@ -69,7 +69,7 @@ const features = [
       <div>
         <img
           className="absolute [mask-image:linear-gradient(to_top,transparent_30%,#000_100%)] "
-          src="src/assets/ViewSurvey.png" 
+          src="/image/ViewSurvey.png" 
           alt="ViewSurveyResults"
         />
       </div>
@@ -86,7 +86,7 @@ const features = [
       <div>
         <img
           className="absolute [mask-image:linear-gradient(to_top,transparent_20%,#000_100%)] "
-          src="src/assets/MapBG.png"
+          src="/image/MapBG.png"
           alt="MapBG"
         />
       </div>

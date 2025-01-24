@@ -7,7 +7,7 @@ import { MdError } from 'react-icons/md'
 const InputError = ({ message }) => {
     return (
         <motion.p
-            className="flex items-center gap-1 px-2 font-semibold text-red-500 bg-red-100 rounded-md"
+            className="flex items-center gap-1 px-2  text-red-500  rounded-md"
             {...framer_error}
         >
             <MdError />
@@ -35,9 +35,6 @@ export default function Input({ label, type, id, placeholder, validation, name }
     return (
         <div className="flex flex-col w-full gap-2">
             <div className="flex justify-between">
-                {/* <label htmlFor={id} className="font-semibold capitalize">
-                    {label}
-                </label> */}
                 <AnimatePresence mode="wait" initial={false}>
                     {isInvalid && (
                         <InputError
@@ -50,7 +47,7 @@ export default function Input({ label, type, id, placeholder, validation, name }
             <input
                 id={id}
                 type={type}
-                className="w-full p-3 2xl:p-5 font-medium border border-b-slate-900 hover:border  hover:border-slate-300 placeholder:opacity-60"
+                className="input-field"
                 placeholder={placeholder}
                 {...register(name, validation)}
             />

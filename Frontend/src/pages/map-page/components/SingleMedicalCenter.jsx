@@ -1,24 +1,27 @@
-import { Star } from 'lucide-react';
+import { TbVaccine } from "react-icons/tb";
 
-export default function SingleMedicalCenter({ name, adress, onDetailsClick }) {
+export default function SingleMedicalCenter({ name, adress, onDetailsClick, isSelected }) {
     return (
-        <div className="flex items-center justify-between p-3 border-b border-gray-100">
+        <div 
+            className={`flex items-center justify-between p-3 cursor-pointer transition-colors duration-200 ${
+                isSelected ? 'bg-blue-50' : 'hover:bg-gray-100 active:bg-gray-200'
+            }`}
+            onClick={onDetailsClick}
+        >
             <div className="flex items-start gap-4 text-sm">
-                <Star className="w-6 h-6 mt-1 text-gray-400" strokeWidth={1} />
+                <TbVaccine 
+                    className={`w-6 h-6 mt-1 ${isSelected ? 'text-blue-500' : 'text-gray-400'}`} 
+                    strokeWidth={1} 
+                />
                 <div>
-                    <h3 className="font-medium text-gray-900">{name}</h3>
-                    <p className="text-gray-500">{adress} </p>
+                    <h3 className={`font-medium ${isSelected ? 'text-blue-700' : 'text-gray-900'}`}>
+                        {name}
+                    </h3>
+                    <p className={`${isSelected ? 'text-blue-600' : 'text-gray-500'}`}>
+                        {adress}
+                    </p>
                 </div>
             </div>
-          
-            {/* <button
-                onClick={onDetailsClick}
-                className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors border-2 border-gray-200"
-            >
-                More details
-            </button> */}
         </div>
-    )
-};
-
-
+    );
+}

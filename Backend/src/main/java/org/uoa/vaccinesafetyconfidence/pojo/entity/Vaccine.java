@@ -10,8 +10,10 @@ import lombok.Data;
 public class Vaccine {
     @TableId(value = "vac_id_pk", type = IdType.AUTO)
     private Integer vacIdPk;
+
     private String vacType;
     private String vacEfficacy;
     private Integer vacSevereCases;
+    private String vacDescription;
 
 }

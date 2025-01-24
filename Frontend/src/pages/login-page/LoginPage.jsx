@@ -14,10 +14,13 @@ export default function LoginPage() {
             {/* Right Section */}
             <div className="flex w-full md:w-3/5 items-center justify-center bg-white rounded-none md:rounded-l-[50px]">
                 <div className="w-3/5 max-w-xl ">
-                    <h2 className="text-[25px] 2xl:text-3xl font-bold mb-10 text-gray-800">Sign in to VaccineView</h2>
+                    <h2 className="text-[25px] 2xl:text-3xl font-bold mb-10 text-gray-800">Log in to <a className="underline underline-offset-2 decoration-indigo-500 hover:decoration-indigo-300" href="/">VaccineView</a>
+                    </h2>
 
-                    {/* Google Signup Button */}
-                    <GoogleConnection />
+                    {/* Google Login Button */}
+                    <div className="mb-5">
+                        <GoogleConnection shouldRegister={false} />
+                    </div>
 
                     {/* Separator */}
                     <div className="flex items-center mb-5 2xl:mb-10">

@@ -4,11 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const itemVariants = {
-  open: {
-    opacity: 1,
-    x: 0,
-    transition: { type: "spring", stiffness: 200, damping: 20 }
-  },
+  open: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 200, damping: 20 } },
   closed: { opacity: 0, x: 20, transition: { duration: 0.2 } }
 };
 
@@ -20,22 +16,25 @@ export default function SurveyCircle({ size, optionType, position, onChange, dat
   const radius = size * 0.4;
   const strokeWidth = size * 0.08;
 
+  // Generate the options list based on the option type
   useEffect(() => {
     if (!data) return;
 
-    // Generate menu items based on the text type
     switch (optionType) {
       case "Year":
-        const years = [...new Set(data.map(surveyOption => surveyOption.surveyYear))];
+        const years = [...new Set(data.map(item => item.vsgYear))];
         setOptionsList(years.map(year => year.toString()));
         break;
 
       case "Question":
-        const questions = [...new Set(data.map(surveyOption => surveyOption.surveyQuestion))];
-        setOptionsList(questions);
+        setOptionsList([
+          "Vaccines are important for children.",
+          "Vaccines are safe.",
+          "Vaccines are effective.",
+          "Vaccines are compatible with my beliefs."
+        ]);
         break;
 
-      // TODO - hardcoded values for now
       case "Demographic":
         setOptionsList(data);
         break;
@@ -54,7 +53,7 @@ export default function SurveyCircle({ size, optionType, position, onChange, dat
   };
 
   return (
-    <div className="relative" onMouseLeave={() => setIsOpen(false)}>
+    <div className="relative">
       <motion.div
         className="box"
         animate={{ rotate: 360 }}

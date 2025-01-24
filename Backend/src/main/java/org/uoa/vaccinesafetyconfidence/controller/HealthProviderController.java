@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.uoa.vaccinesafetyconfidence.result.R;
-import org.uoa.vaccinesafetyconfidence.service.DiseaseService;
 import org.uoa.vaccinesafetyconfidence.service.HealthProviderService;
+
+
 
 @RestController
 @RequestMapping("/healthProvider")
@@ -22,9 +23,29 @@ public class HealthProviderController {
     private HealthProviderService healthProviderService;
 
     @Operation(summary = "根据疫苗ID获取Health Provider的所有信息")
-    @GetMapping("/all")
-    public R getVaccineById(@RequestParam Integer vaccineId){
-        return R.ok().data(healthProviderService.getHealthProviders(vaccineId));
+    @GetMapping("/filter/id")
+    public R getHealthProviderById(@RequestParam Integer vaccineId){
+        return R.ok().data(healthProviderService.searchHealthProvidersById(vaccineId));
     }
+
+    @Operation(summary = "获取Health Provider的所有信息")
+    @GetMapping("/all")
+    public R getAllHealthProvider(){
+        return R.ok().data(healthProviderService.getAllHealthProviders());
+    }
+
+    @Operation(summary = "显示现有的Health Provider的type都有哪些")
+    @GetMapping("/type")
+    public R getHealthProviderTypes(){
+        return R.ok().data(healthProviderService.getHealthProviderTypes());
+    }
+
+    @Operation(summary = "根据type，获取所有符合的Health Provider")
+    @GetMapping("/filter/type")
+    public R getHealthProviderByType(String healthProviderType){
+        return R.ok().data(healthProviderService.searchHealthProvidersByType(healthProviderType));
+    }
+
+
 
 }

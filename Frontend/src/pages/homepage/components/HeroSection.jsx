@@ -7,26 +7,31 @@ import AnimatedShinyText from "@/components/ui/animated-shiny-text";
 
 const reviews = [
   {
+    id:1,
     name: "User",
     body: "I'm not sure if this vaccine is really useful... I think I'll wait and see...",
     img: "https://avatar.vercel.sh/jack",
   },
   {
+    id:2,
     name: "User",
     body: "Is there anyone who hasn't been vaccinated? Our whole family has been vaccinated.",
     img: "https://avatar.vercel.sh/jill",
   },
   {
+    id:3,
     name: "User",
     body: "Our community doctor recommended that we all get vaccinated, and I think she is right.",
     img: "https://avatar.vercel.sh/john",
   },
   {
+    id:4,
     name: "User",
     body: "Will there really be no terrible sequelae? Sorry for being suspicious.",
     img: "https://avatar.vercel.sh/jane",
   },
   {
+    id:5,
     name: "User",
     body: "From my personal experience, vaccines are indeed useful and they really help me prevent diseases.",
     img: "https://avatar.vercel.sh/jenny",
@@ -102,12 +107,12 @@ function HeroSection() {
           <div className="relative flex w-screen h-[40%] flex-col items-center overflow-hidden rounded-lg mt-4 gap-2">
             <Marquee pauseOnHover className="[--duration:40s]">
               {firstRow.map((review) => (
-                <ReviewCard key={review.name} {...review} />
+                <ReviewCard key={review.id} {...review} />
               ))}
             </Marquee>
             <Marquee reverse pauseOnHover className="[--duration:40s]">
               {secondRow.map((review) => (
-                <ReviewCard key={review.name} {...review} />
+                <ReviewCard key={review.id} {...review} />
               ))}
             </Marquee>
           </div>

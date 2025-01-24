@@ -5,16 +5,16 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { useAppContext } from "@/context/AppContextProvider.jsx";
+import { useVaccine } from "@/hooks/useVaccine";
 
-export default function VaccineSelection() {
+export default function VaccineSelection({ selectedVaccine, setSelectedVaccine }) {
     const [open, setOpen] = useState(false)
-    const { vaccineTypes, selectedVaccine, setSelectedVaccine, isLoading, error } = useAppContext()
+    const { vaccineTypes,  isLoading, error } = useVaccine();
 
     return (
         <div className="flex items-center gap-4">
-            <div className="text-xl font-bold font-PoppinsBold">
-                <p>{selectedVaccine?.vaccineType || ""}</p>
+            <div className=" font-semibold ">
+                <p>Choose Vaccine Type :</p>
             </div>
 
             <div>

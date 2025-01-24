@@ -21,8 +21,8 @@ export default function MiniSidebar({ activeEntry, setActiveEntry }) {
     ];
 
     return (
-        <div className="h-screen w-30 p-4 bg-gray-50 my-3 border-2 border-white ml-3 rounded-xl ">
-            <div className="mb-6" >
+        <div className="h-screen w-30 p-4 my-3 rounded-xl ml-3 ">
+            <div className="mb-8" >
                 <a href="/" >
                     <div className="text-xl font-bold flex items-center space-x-2 " >
                         <span className="bg-gradient-to-b from-customTheme-light to-customTheme-dark p-2 rounded-full text-white">
@@ -32,7 +32,7 @@ export default function MiniSidebar({ activeEntry, setActiveEntry }) {
                 </a>
             </div>
 
-            <div className="space-y-3" >
+            <div className="space-y-6" >
                 {entries.map((entry) => (
                     <div key={entry.title} className="">
                         <Link

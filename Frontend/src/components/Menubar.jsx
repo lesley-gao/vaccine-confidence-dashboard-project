@@ -1,14 +1,34 @@
 // This is the compoment that displays the menubar of the dashboard page.
 // The menubar contains the breadcrumb, vaccine search, and user information sections.
-
-import * as React from "react"
+import React, { useState, useEffect } from "react";
 import { Slash } from "lucide-react"
 import { GoHome } from "react-icons/go";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import VaccineSelection from "./VaccineSelection";
 import SettingsDrawer from "./SettingsDrawer";
-export default function Menubar({ activeItem }) {
+import { useAppContext } from "@/context/AppContextProvider.jsx";
+import { Link } from "react-router-dom";
+import { useVaccine } from "@/hooks/useVaccine";
+
+export default function Menubar({ activeItem, onVaccineSelect }) {
+
+    const { user } = useAppContext();
+    const { vaccineTypes, isLoading } = useVaccine();
+    const [selectedVaccine, setSelectedVaccine] = useState(null);
+
+    // Set initial selected vaccine ( the first one in the vaccineTypes list) when vaccine types are loaded
+    useEffect(() => {
+        if (vaccineTypes.length > 0 && !selectedVaccine) {
+            setSelectedVaccine(vaccineTypes[0]);
+            onVaccineSelect(vaccineTypes[0]);
+        }
+    }, [vaccineTypes]);
+
+    const handleVaccineChange = (vaccine) => {
+        setSelectedVaccine(vaccine);
+        onVaccineSelect(vaccine);
+    };
 
     return (
         <div className="p-4 bg-gray-50 border-2 border-white rounded-xl flex items-center justify-between">
@@ -26,32 +46,43 @@ export default function Menubar({ activeItem }) {
                         {activeItem}
                     </BreadcrumbLink>
 
-                    {/* <BreadcrumbSeparator>
-                    <Slash />
-                </BreadcrumbSeparator>
-                <BreadcrumbItem>
-                    <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-                </BreadcrumbItem> */}
-
                 </BreadcrumbList>
             </Breadcrumb>
- 
+
+
             <div className="flex gap-10 items-center ">
-                {activeItem === "Dashboard"? <VaccineSelection /> : null }
+                {activeItem === "Dashboard" ? (
+                    <VaccineSelection
+                        selectedVaccine={selectedVaccine}
+                        setSelectedVaccine={handleVaccineChange}
+                    />
+                ) : null}
             </div>
 
             {/* avatar and user information section on the right */}
             <div className="flex gap-4 items-center">
-                <Avatar className="hover:scale-110" >
-                    <AvatarImage src="src/assets/avatars/avatar3.jpg" alt="@shadcn" />
-                    <AvatarFallback>NA</AvatarFallback>
-                </Avatar>
-                <p className="text-sm text-center">Oliver<br></br><span className="text-gray-600">Admin</span></p>
-                <div >
-                    <SettingsDrawer />
-                </div>
+                {user && user.username ? (
+                    <>
+                        <Link to="/profile" className="hover:scale-110">
+                            <Avatar>
+                                {console.log(user.avatarPath)}
+                                <AvatarImage src={user.avatarPath} alt="user avatar" />
+                                <AvatarFallback>
+                                    <img src="/avatars/default-avatar.jpg" alt="default avatar"/>
+                                </AvatarFallback>
+                            </Avatar>
+                        </Link>
+                        <p>
+                            Welcome, <span className="text-[#3949ab] font-bold">{user.username}</span>
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <img src="/image/sayhi.png" alt="user avatar" className="w-14 h-12" />
+                        <p>Welcome to VaccineView!</p></>
+                )}
+                <SettingsDrawer />
             </div>
         </div>
-
     )
 }

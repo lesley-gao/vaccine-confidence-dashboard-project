@@ -26,7 +26,7 @@ public class ConverterUtils {
                 BeanUtils.copyProperties(source, target);
                 targetList.add(target);
             } catch (Exception e) {
-                throw new RuntimeException("对象转换失败: " + e.getMessage(), e);
+                throw new RuntimeException("列表对象转换失败: " + e.getMessage(), e);
             }
         }
         return targetList;

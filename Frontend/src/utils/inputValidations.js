@@ -10,8 +10,8 @@ export const username_validation = {
             message: 'Username is required',
         },
         maxLength: {
-            value: 15,
-            message: 'max 15 characters',
+            value: 20,
+            message: 'max 20 characters',
         },
         pattern: {
             value: /^[a-zA-Z0-9]*$/,

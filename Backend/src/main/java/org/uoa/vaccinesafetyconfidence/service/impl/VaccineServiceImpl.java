@@ -1,5 +1,6 @@
 package org.uoa.vaccinesafetyconfidence.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +17,12 @@ import org.uoa.vaccinesafetyconfidence.result.ResponseEnum;
 import org.uoa.vaccinesafetyconfidence.service.VaccineService;
 import org.uoa.vaccinesafetyconfidence.utils.ConverterUtils;
 
+
 import java.util.*;
 
 @Slf4j
 @Service
 public class VaccineServiceImpl implements VaccineService {
-
-//    private final VaccineMapper vaccineMapper;
-//
-//    public VaccineServiceImpl(VaccineMapper vaccineMapper) {
-//        this.vaccineMapper = vaccineMapper;
-//    }
 
     @Autowired
     private VaccineMapper vaccineMapper;
@@ -45,6 +41,18 @@ public class VaccineServiceImpl implements VaccineService {
 
     @Autowired
     private VacDevelopmentMilestoneMapper vacDevelopmentMilestoneMapper;
+
+    @Autowired
+    private VCISurveyGeneralMapper vciSurveyGeneralMapper;
+
+    @Autowired
+    private VCISurveyDetailedMapper vciSurveyDetailedMapper;
+
+    @Autowired
+    private GeneralSocialMediaSentimentScoreMapper generalSocialMediaSentimentScoreMapper;
+
+    @Autowired
+    private GeneralSocialMediaWordFrequencyMapper generalSocialMediaWordFrequencyMapper;
 
 
     public Vaccine checkVaccineExistence(Integer vaccineId){
@@ -173,8 +181,6 @@ public class VaccineServiceImpl implements VaccineService {
     @Override
     public String getVaccineAllInfoById(Integer vaccineId){
 
-
-
         Vaccine vaccine = vaccineMapper.selectById(vaccineId);
         if (vaccine == null){
             log.error("要查找的疫苗ID不存在");
@@ -229,6 +235,59 @@ public class VaccineServiceImpl implements VaccineService {
     }
 
 
+    @Override
+    public List<VCISurveyGeneral> getVCISurveyGeneralInfoOfAllVax(){
+        List<VCISurveyGeneral> vciSurveyGeneralList = vciSurveyGeneralMapper.selectList(null);
+        return vciSurveyGeneralList;
+    }
+
+
+    @Override
+    public List<VCISurveyDetailed> getVCISurveyDetailedInfoOfAllVax(){
+        List<VCISurveyDetailed> vciSurveyNZDetailedList = vciSurveyDetailedMapper.selectList(null);
+        return vciSurveyNZDetailedList;
+    }
+
+    @Override
+    public List<VCISurveyGeneral> getVCISurveyGeneralInfoByBinaryCountryCode(String binaryCountryCode){
+        QueryWrapper<VCISurveyGeneral> vciSurveyGeneralQueryWrapper = new QueryWrapper<>();
+        vciSurveyGeneralQueryWrapper.lambda().eq(VCISurveyGeneral::getVsgCountryCode, binaryCountryCode);
+
+        List<VCISurveyGeneral> vciSurveyGeneralList = vciSurveyGeneralMapper.selectList(vciSurveyGeneralQueryWrapper);
+
+
+        return vciSurveyGeneralList;
+    }
+
+    @Override
+    public List<GeneralSocialMediaSentimentScore> getGeneralSocialMediaSentimentScore() {
+        LambdaQueryWrapper<GeneralSocialMediaSentimentScore> sentimentScoreLambdaQuery = new LambdaQueryWrapper<>();
+        sentimentScoreLambdaQuery.orderByAsc(GeneralSocialMediaSentimentScore::getGsmssTimeCreated);
+        return generalSocialMediaSentimentScoreMapper.selectList(sentimentScoreLambdaQuery);
+    }
+
+    @Override
+    public List<GeneralSocialMediaWordFrequency> getGeneralSocialMediaWordFrequency() {
+
+
+
+//        QueryWrapper<GeneralSocialMediaWordFrequency> queryWrapper = new QueryWrapper<>();
+//
+//        // 假设你有一个时间戳字段 "timestamp_column" 作为排序依据
+//        queryWrapper.orderByDesc("timestamp_column");  // 按时间戳降序排列，最新的排在最前面
+//
+//        // 查询最新一条数据，limit 1
+//        queryWrapper.last("LIMIT 1");
+//
+//
+//        LambdaQueryWrapper<GeneralSocialMediaWordFrequency> gsmwfLambdaQuery = new LambdaQueryWrapper<>();
+//        gsmwfLambdaQuery.between()
+//
+//        generalSocialMediaWordFrequencyMapper.selectList();
+
+
+        return generalSocialMediaWordFrequencyMapper.selectRecordsOfLatestDate();
+    }
 
 
 }

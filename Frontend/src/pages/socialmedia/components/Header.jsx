@@ -4,8 +4,8 @@ export default function Header() {
 
             {/* Header Section */}
             <div className="flex flex-col relative">
-            <img className="w-screen" src="src/assets/Social media page header img.png" alt="SocialMediaPageHeaderImg" />
-            <img className="absolute top-20 w-[350px] ml-10" src="src/assets/Social media icon.png" alt="SocialMediaIcon" />
+            <img className="w-screen" src="/image/Social media page header img.png" alt="SocialMediaPageHeaderImg" />
+            <img className="absolute top-20 w-[350px] ml-10" src="/image/Social media icon.png" alt="SocialMediaIcon" />
             </div>
 
             {/* Title Section */}
@@ -19,7 +19,7 @@ export default function Header() {
                 ** The comments are from Twitter, Reddit, Quora, and Facebook platforms.
                 </div>
             </div>
-            <img src="src/assets/Example-avatar.png" alt="ExampleAvatar" />
+            <img src="/image/Example-avatar.png" alt="ExampleAvatar" />
             </div>
 
 

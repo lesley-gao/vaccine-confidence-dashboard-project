@@ -1,9 +1,9 @@
 server:
-  port: 8050
+  port: 8060
 
 spring:
   profiles:
-    active: loc # 切换环境配置
+    active: dev # 切换环境配置
   application:
     name: vaccine-safety-confidence
   mybatis-plus:
@@ -17,6 +17,8 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
+
+
 
 #  国际化（i18n）消息资源文件配置
 #  messages:

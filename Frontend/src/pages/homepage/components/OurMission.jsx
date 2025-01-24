@@ -4,15 +4,15 @@ export default function OurMission() {
             
             <div className="flex flex-row gap-16">
                 <div className="flex flex-col w-1/3 gap-5">
-                <img className="w-[50px] h-[50px]" src="src/assets/icon1.png" alt="icon1" />
+                <img className="w-[50px] h-[50px]" src="/image/icon1.png" alt="icon1" />
                 <div>
                 <div className="text-[25px] font-bold text-[#152063]">Intutive</div>
-                <div className="text-justify">We are committed to providing you with professional vaccine reliability information through clear data visualization dashboards to eliminate misinformation.</div>
+                <div className="text-justify">We are committed to providing you with professional vaccine reliability information through clear data visualization dashboards to promote correct information.</div>
                 </div>
                 </div>
 
                 <div className="flex flex-col w-1/3 gap-5">
-                <img className="w-[50px] h-[50px]" src="src/assets/icon2.png" alt="icon2" />
+                <img className="w-[50px] h-[50px]" src="/image/icon2.png" alt="icon2" />
                 <div>
                 <div className="text-[25px] font-bold text-[#152063]">Insightful</div>
                 <div className="text-justify">We hope that decision makers, academic researchers and other relevant professionals can gain insights here.</div>
@@ -20,7 +20,7 @@ export default function OurMission() {
                 </div>
 
                 <div className="flex flex-col w-1/3 gap-5">
-                <img className="w-[50px] h-[50px]" src="src/assets/icon3.png" alt="icon3" />
+                <img className="w-[50px] h-[50px]" src="/image/icon3.png" alt="icon3" />
                 <div>
                 <div className="text-[25px] font-bold text-[#152063]">Practical</div>
                 <div className="text-justify">We hope that the public can get more information they need about vaccines that are closely related to our personal health.</div>
