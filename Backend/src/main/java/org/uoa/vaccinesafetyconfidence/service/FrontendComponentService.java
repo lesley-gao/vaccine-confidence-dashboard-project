@@ -8,4 +8,5 @@ public interface FrontendComponentService {
     List<ComponentDataSource> getComponentDataSourceById(String componentId);
 
     List<ComponentDataSource> getAComponentDataSource();
+
 }

@@ -1,17 +1,17 @@
+/**
+ * This component displays the number of disease cases related to a selected vaccine over a specified year range (2016-2022).
+ * It fetches and visualizes the data as a stacked bar chart, allowing users to track the trends of disease cases.
+ */
 import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
 import { fetchData } from '@/utils/api.js'
 import DataSource from "./DataSource";
+import PlaceHolder from "./PlaceHolder";
 
 function DiseaseCase({ selectedVaccine }) {
 
   const [diseaseCases, setDiseaseCases] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const dataSource = {
-    websiteName: "ESR",
-    URL: "https://www.esr.cri.nz/expertise/public-health/infectious-disease-intelligence-surveillance/",
-  };
 
   // Set the year range（2016-2022）
   const startYear = 2016;
@@ -24,7 +24,6 @@ function DiseaseCase({ selectedVaccine }) {
       setLoading(true);
       try {
         const data = await fetchData(`/disease/all?vaccineId=${selectedVaccine.vaccineId}`);
-        console.log('Fetched disease cases:', data);
 
         if (data && Array.isArray(data)) {
 
@@ -51,7 +50,8 @@ function DiseaseCase({ selectedVaccine }) {
     };
 
     getDiseaseCases();
-  }, [selectedVaccine]); // re-fetch incidence rates when the selected vaccine changes
+  }, [selectedVaccine]);
+
 
   if (loading) {
     return (
@@ -64,10 +64,7 @@ function DiseaseCase({ selectedVaccine }) {
   const dataToDisplay = diseaseCases.map(caseData => ({
     x: caseData.x,
     y: caseData.y,
-    x: caseData.x,
-    y: caseData.y,
     type: "bar",
-    name: caseData.name,
     name: caseData.name,
     marker: { color: caseData.name === "Measles" ? "#8979FF" : caseData.name === "Mumps" ? "#FF928A" : "#3CC3DF" },
   }));
@@ -90,8 +87,8 @@ function DiseaseCase({ selectedVaccine }) {
       xanchor: "right",
       yanchor: "bottom",
     },
-    paper_bgcolor: '#ffffff',  
-    plot_bgcolor: '#ffffff',   
+    paper_bgcolor: '#ffffff',
+    plot_bgcolor: '#ffffff',
     autosize: true,
   }
 
@@ -99,20 +96,37 @@ function DiseaseCase({ selectedVaccine }) {
     <div className="h-full p-4 flex flex-col">
 
       <div className="flex flex-row gap-2 mb-3">
-        <p className='text-xl font-bold font-PoppinsBold'>Disease Cases ({`${startYear}`}-{`${finishYear}`})</p>
-        <DataSource dataSource={dataSource} />
+        <p className='text-xl font-bold font-PoppinsBold dark:text-cyan-300'>Disease Cases ({`${startYear}`}-{`${finishYear}`})</p>
+        {diseaseCases && diseaseCases.length > 0 && <DataSource selectedVaccine={selectedVaccine} componentId="dis_cases" />}
       </div>
 
-      <div className='flex-1 justify-center'>
-        <Plot
-          data={dataToDisplay}
-          layout={layout}
-          style={{ width: '100%', height: '100%' }}
-          config={{ responsive: true }}
-          useResizeHandler={true}
-        />
-      </div>
-
+      {!diseaseCases || diseaseCases.length === 0 ? (
+        <div className="h-full flex items-center justify-center">
+          <PlaceHolder />
+        </div>
+      ) : (
+        <div className='flex-1 justify-center'>
+          <Plot
+            data={dataToDisplay}
+            layout={layout}
+            style={{ width: '100%', height: '100%' }}
+            config={{
+              responsive: true,
+              displayModeBar: true,
+              displaylogo: false,
+              modeBarButtons: [['toImage', 'zoom2d', 'pan2d', 'select2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d']],
+              toImageButtonOptions: {
+                format: 'png',
+                filename: 'Disease Cases',
+                height: 600,
+                width: 800,
+                scale: 2
+              },
+            }}
+            useResizeHandler={true}
+          />
+        </div>
+      )}
     </div>
   );
 }

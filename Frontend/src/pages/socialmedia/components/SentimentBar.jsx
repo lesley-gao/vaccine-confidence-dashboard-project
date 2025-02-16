@@ -1,3 +1,7 @@
+/**
+ * This component displays a sentiment bar chart that visually represents sentiment distribution.
+ * It is used on the SocialMedia page.
+ */
 import React, { useState, useRef } from "react";
 
 export default function SentimentBar({ sentiments, totalScore, barHeight = "h-8" }) {
@@ -50,10 +54,10 @@ export default function SentimentBar({ sentiments, totalScore, barHeight = "h-8"
                             key={index}
                             className={`absolute h-full transition-all duration-1000 ease-in-out ${
                                 index === 0
-                                    ? "bg-[#6FD195] rounded-l-[15px]"
+                                    ? "bg-[#81B214] rounded-l-[15px]"
                                     : index === sentiments.length - 1
                                     ? "bg-[#D0004B] rounded-r-[15px]"
-                                    : "bg-[#FFDD55]"
+                                    : "bg-[#efad03]"
                             }`}
                             style={{
                                 left: `${previousPercentage}%`,
@@ -62,7 +66,7 @@ export default function SentimentBar({ sentiments, totalScore, barHeight = "h-8"
                             onMouseEnter={(event) => handleMouseEnter(sentiment.name, event)}
                             onMouseLeave={handleMouseLeave}
                         >
-                            <span className="text-black font-bold text-sm absolute inset-0 flex items-center justify-center">
+                            <span className="text-black font-bold text-sm absolute inset-0 flex items-center justify-center ">
                                 {calculatePercentage(sentiment.value, totalScore)}%
                             </span>
                         </div>

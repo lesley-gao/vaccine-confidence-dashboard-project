@@ -1,4 +1,7 @@
-// This is a confidence percentage component that displays a percentage value with a circular progress bar.
+/**
+ * This component displays a confidence percentage with a circular progress bar.
+ * It is used on the Survey page.
+ */
 import React, { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 
@@ -12,12 +15,10 @@ export default function ConfidencePct({ percentage, size }) {
     const strokeWidth = size * 0.08;  // 8% of size for stroke width
     const progress = ((100 - animatedPercentage) / 100) * circumference;  // Calculate progress based on animated percentage
 
-    // Animation effect
+    // Animation effect: reset animation when percentage changes, then animate to target percentage
     useEffect(() => {
-        // Reset animation when percentage changes
         setAnimatedPercentage(0);
 
-        // Animate to target percentage
         const timer = setTimeout(() => {
             setAnimatedPercentage(percentage);
         }, 100);
@@ -35,16 +36,11 @@ export default function ConfidencePct({ percentage, size }) {
 
             <div className="relative" style={{ width: size, height: size }}>
                 <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90" >
-                    {/* Define gradient */}
                     <defs>
                         <linearGradient id="progressGradient" gradientTransform="rotate(90)">
                             <stop offset="0%" stopColor="#818cf8" />
                             <stop offset="50%" stopColor="#60a5fa" />
                             <stop offset="100%" stopColor="#2dd4bf" />
-                            {/* <stop offset="0%" stopColor="#A8B4FF" />  
-                            <stop offset="33%" stopColor="#6674DB" />  
-                            <stop offset="66%" stopColor="#3949AB" />  
-                            <stop offset="100%" stopColor="#152063" />   */}
                         </linearGradient>
                     </defs>
 
@@ -75,12 +71,10 @@ export default function ConfidencePct({ percentage, size }) {
                     />
                 </svg>
 
-                {/* Animated percentage text */}
-                <div
-                    className="absolute inset-0 flex items-center justify-center text-4xl font-semibold"
-                    style={{ transform: 'rotate(0deg)', color: '#3949AB' }}>
+                <div className="absolute inset-0 flex items-center justify-center text-4xl font-semibold  text-[#3949AB] dark:text-slate-200" >
                     {Math.round(animatedPercentage)}%
                 </div>
+
             </div>
 
         </motion.div >

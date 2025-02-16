@@ -1,3 +1,7 @@
+/**
+ * This component displays the header section of the social media sentiment analysis page.
+ * It is used on the SocialMedia page.
+ */
 export default function Header() {
     return (
         <div className="flex flex-col gap-10">
@@ -21,8 +25,6 @@ export default function Header() {
             </div>
             <img src="/image/Example-avatar.png" alt="ExampleAvatar" />
             </div>
-
-
         </div>
     )
 }

@@ -1,3 +1,7 @@
+/**
+ * This component visualizes frequently discussed vaccine-related topics on social media using a word cloud with sentiment-based coloring.
+ * It is used on the SocialMedia page.
+ */
 import React, { useRef } from "react";
 import WordCloud from "react-d3-cloud";
 import GroupNote from "./GroupNote";
@@ -7,11 +11,11 @@ export default function CloudWords({ wordData, platforms, currentIndex }) {
   const tooltipRef = useRef(null);
 
   const fontSizeMapper = (word) =>
-    Math.max(10, Math.min(Math.log2(word.value) * 10, 20));
+    Math.max(20, Math.min(Math.log2(word.value) * 150, 40));;
 
   const colorMapper = (attitude) => {
-    if (attitude === "positive") return "#6FD195"; // Green
-    if (attitude === "neutral") return "#FFDD55"; // Yellow
+    if (attitude === "positive") return "#81B214"; // Green
+    if (attitude === "neutral") return "#efad03"; // Yellow
     if (attitude === "negative") return "#D0004B"; // Red
     return "#000000";
   };
@@ -47,14 +51,12 @@ export default function CloudWords({ wordData, platforms, currentIndex }) {
   return (
     <div className="flex flex-col items-center h-full component-card">
       <div className="w-[90%] mt-8 flex flex-col gap-4 text-center text-black">
-        <p className="text-2xl font-bold ">
-          The frequently discussed topics of different attitude groups on social media
-          platforms
+        <p className="text-2xl font-bold dark:text-white">
+        Frequent Discussion Topics Among Different Attitude Groups on {platforms[currentIndex]?.name || "Social Media"}
         </p>
         
-        <p className="text-sm">
-          * The more often the word appears in the posts, the larger it is in
-          the figure *
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          * The more frequently a word appears in the posts, the larger it is in the figure. * 
         </p>
       </div>
 
@@ -64,13 +66,13 @@ export default function CloudWords({ wordData, platforms, currentIndex }) {
           totalScore={platforms[currentIndex]?.totalScore || 0}
         />
       </div>
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-row gap-2 items-center px-5">
         <GroupNote attitude={"positive"} />
         <GroupNote attitude={"neutral"} />
         <GroupNote attitude={"negative"} />
       </div>
 
-      <div className="w-full h-auto overflow-hidden items-center">
+      <div className="w-full h-auto overflow-hidden items-center mt-6">
         <WordCloud
           data={wordData.filter(
             (word) => word.platform === platforms[currentIndex]?.name
@@ -79,7 +81,7 @@ export default function CloudWords({ wordData, platforms, currentIndex }) {
           rotate={() => 0}
           font="PoppinsRegular"
           fill={(word) => colorMapper(word.attitude)}
-          padding={1}
+          padding={2}
           width={300}
           height={200}
           onWordMouseOver={handleMouseOver}

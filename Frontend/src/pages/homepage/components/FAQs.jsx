@@ -1,3 +1,8 @@
+/**
+ * This component displays frequently asked questions and their answers.
+ * It is used on the homepage.
+ */
+import { BsFillQuestionCircleFill } from "react-icons/bs";
 import { useEffect, useRef } from "react";
 
 export default function FAQs() {
@@ -52,12 +57,12 @@ export default function FAQs() {
 
     return (
         <div ref={(el) => sections.current[0] = el}
-        className="flex flex-col md:flex-row gap-8 p-6 mt-20 opacity-0 translate-y-10 transition-all duration-700">
+            className="flex flex-col md:flex-row gap-8 p-6 mt-20 opacity-0 translate-y-10 transition-all duration-700">
             {/* Left Column */}
-            <div className="flex-1 md:flex-[1] items-center text-[#152063]">
+            <div className="flex-1 md:flex-[1] items-center text-[#152063] dark:text-cyan-300">
                 <div className="flex flex-row gap-4 items-center mb-4">
-                    <img src="/image/question-icon.png" alt="question-icon" />
-                <p className="text-[40px] font-bold">FAQs</p>
+                    <BsFillQuestionCircleFill className="h-9 w-9" />
+                    <p className="text-[40px] font-bold">FAQs</p>
                 </div>
                 <p className="text-[20px]">All the questions you want to ask...</p>
             </div>
@@ -67,7 +72,7 @@ export default function FAQs() {
                 {FAQs.map((faq, index) => (
                     <div key={index} className="border-b border-gray-400 pb-4">
                         <h3 className="text-lg font-semibold mb-2">{faq.question}</h3>
-                        <p className="text-gray-500">{faq.answer}</p>
+                        <p className="text-gray-500 dark:text-gray-400">{faq.answer}</p>
                     </div>
                 ))}
             </div>

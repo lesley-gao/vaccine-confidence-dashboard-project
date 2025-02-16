@@ -1,38 +1,43 @@
+/**
+ * This component displays the description of a selected vaccine.
+ * The description is shown with an option to expand for more details.
+ * It is displayed on the Dashboard page.
+ */
 import React, { useState, useEffect } from "react";
 import DataSource from "./DataSource";
-import { vaxDesciption } from "@/data/vaxDesciption";
+import { fetchData } from '@/utils/api.js'
 
 function VaccineDescription({ selectedVaccine }) {
   const [vaxDesc, setVaxDesc] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const dataSource = {
-    websiteName: "ESR",
-    URL: "https://www.esr.cri.nz/expertise/public-health/infectious-disease-intelligence-surveillance/",
-  };
-
+  // Fetch vaccine description
   useEffect(() => {
-    const fetchVaxDescription = async () => {
+    const getDescription = async () => {
       if (!selectedVaccine?.vaccineId) return;
 
       setLoading(true);
       try {
-        const vaccineData = vaxDesciption.find(
-          (vaccine) => vaccine.vacIdPk === selectedVaccine.vaccineId
+        const data = await fetchData(
+          `/vaccine/get/vac-id?vaccineId=${selectedVaccine.vaccineId}`
         );
-        setVaxDesc(vaccineData ? vaccineData.vax_Description : null);
-        setIsExpanded(false);
+        if (data && data.vacDescription) {
+          const description = data.vacDescription;
+
+          setVaxDesc(description);
+        }
       } catch (error) {
-        console.error("Failed to fetch vaccine data:", error);
+        console.error("Failed to fetch description:", error);
         setVaxDesc(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVaxDescription();
+    getDescription();
   }, [selectedVaccine]);
+
 
   if (loading) {
     return (
@@ -50,39 +55,51 @@ function VaccineDescription({ selectedVaccine }) {
     );
   }
 
+  const processedDesc = vaxDesc ? vaxDesc.replace(/\\n/g, '\n\n') : '';
+
   const getDisplayParagraphs = () => {
-    if (!vaxDesc) return ["No vaccine description available for the selected vaccine."];
-    const paragraphs = vaxDesc.split("\n\n"); 
-    return isExpanded ? paragraphs : [paragraphs[0]];  
+    if (!vaxDesc) {
+      return ["No vaccine description available for the selected vaccine."];
+    }
+
+    const paragraphs = processedDesc.split('\n\n')
+      .map(paragraph => paragraph.trim())
+      .filter(paragraph => paragraph.length > 0);
+
+    return isExpanded ? paragraphs : [paragraphs[0]];
   };
 
   return (
     <div className="p-4 flex flex-col gap-3">
       {/* Title and Data Source */}
       <div className="flex flex-row gap-2 items-center relative">
-        <div className="text-xl font-bold font-PoppinsBold">Vaccine Description</div>
-        <DataSource dataSource={dataSource} />
-        <DataSource dataSource={dataSource} />
+        <div className="text-xl font-bold font-PoppinsBold dark:text-cyan-300">Vaccine Description</div>
+        {vaxDesc && <DataSource selectedVaccine={selectedVaccine} componentId="vax_desc" />}
       </div>
 
       {/* Vaccine Description Paragraphs */}
-      <div className="text-justify text-slate-700 transition-all duration-300">
-        {getDisplayParagraphs().map((paragraph, index) => (
-          <p key={index} className="mb-3">
-            {paragraph}
-          </p>
-        ))}
-        {vaxDesc && vaxDesc.includes("\n\n") && (
-          <div className=" flex justify-end">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="  text-indigo-600 hover:text-indigo-900 font-medium"
-          >
-            {isExpanded ? '<< See less' : '>> See more...'}
-          </button>
-          </div>
-        )}
-      </div>
+      {!vaxDesc || vaxDesc.length === 0 ? (
+        <p className=" flex items-center justify-center text-gray-500 text-lg my-5 dark:text-slate-300">
+          Sorry, no description is available for this vaccine yet.
+        </p>
+      ) : (
+        <div className="text-justify text-slate-700 transition-all duration-300 dark:text-white">
+          {getDisplayParagraphs().map((paragraph, index) => (
+            <p key={index} className="mb-3">
+              {paragraph}
+            </p>
+          ))}
+          {vaxDesc && processedDesc.split('\n\n').filter(p => p.trim().length > 0).length > 1 && (
+            <div className=" flex justify-end">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="  text-[#3949AB] hover:text-[#152063] font-semibold dark:text-cyan-300"
+              >
+                {isExpanded ? '<< Collapse' : '>> See more...'}
+              </button>
+            </div>
+          )}
+        </div>)}
     </div>
   );
 }

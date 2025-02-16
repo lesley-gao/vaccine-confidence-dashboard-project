@@ -11,12 +11,12 @@ import java.util.List;
 
 @Repository
 public interface UserSubscriptionMapper extends BaseMapper<UserSubscription> {
-
     @Select("""
-    SELECT v.*
-    FROM `VACCINE_T` v
-    JOIN `USER_SUBSCRIPTION_T` us ON v.vac_id_pk = us.vac_id_pk
-    WHERE us.user_uid_pk = #{userUid}
+        SELECT v.*
+        FROM `VACCINE_T` v
+        JOIN `USER_SUBSCRIPTION_T` us ON v.vac_id_pk = us.vac_id_pk
+        WHERE us.user_uid_pk = #{userUid}
     """)
     List<Vaccine> getUserSubscribedVaccine(@Param("userUid") String userUid);
+
 }

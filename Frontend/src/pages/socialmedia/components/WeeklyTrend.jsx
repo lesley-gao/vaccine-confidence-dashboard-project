@@ -1,14 +1,29 @@
-import React from "react";
+/**
+ * This component visualizes weekly sentiment trends for vaccine-related discussions on social media platforms.
+ * It is used on the SocialMedia page.
+ */
+import React, { useState, useEffect } from "react";
 import Plot from "react-plotly.js";
 
 const WeeklyTrend = ({ sentimentData }) => {
-  if (!sentimentData || sentimentData.length === 0) {
-    return (
-      <div className="h-full flex items-center justify-center bg-gray-50 border-2 border-white rounded-xl">
-        <div className="text-gray-500">No Weekly Sentiment Trends Data Available...</div>
-      </div>
-    );
-  }
+  const [isDark, setIsDark] = useState(document.documentElement.classList.contains('dark'));
+
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          setIsDark(document.documentElement.classList.contains('dark'));
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const platforms = ["X", "Reddit"];
 
@@ -16,7 +31,7 @@ const WeeklyTrend = ({ sentimentData }) => {
     const platformData = sentimentData.filter((item) => item.gsmssPlatform === platform);
 
     const x = platformData.map((item) => item.gsmssTimeCreated);
-    
+
     const positive = platformData.map((item) => {
       const total = item.gsmssPositive + item.gsmssNeutral + item.gsmssNegative;
       return ((item.gsmssPositive / total) * 100).toFixed(2);
@@ -50,7 +65,6 @@ const WeeklyTrend = ({ sentimentData }) => {
         line: { dash: lineStyle, color: "orange" },
         name: `${platform} Neutral`,
         hovertemplate: `<b>Platform:</b> ${platform}<br><b>Attitude:</b> Neutral<br><b>Percentage:</b> %{y}%<extra></extra>`,
-        
       },
       {
         x,
@@ -68,55 +82,73 @@ const WeeklyTrend = ({ sentimentData }) => {
 
   return (
     <div className="w-full h-full p-4 component-card">
-      <h2 className="text-xl font-bold mt-4 mb-2 text-center">Weekly Sentiment Trends</h2>
-      <p className="text-sm text-center">
-        * Feel free to move the mouse to the point to view the specific value
-      </p>
-      <p className="text-sm text-center mb-2">
-        And click the legend on the right to show or hide the corresponding information *
-      </p>
+      <h2 className="text-xl font-bold mt-4 mb-2 text-center text-black dark:text-white">Weekly Sentiment Trends</h2>
 
-      <div className="w-full">
-        <Plot
-      data={plotDataFlat.map((trace) => ({
-        ...trace,
-        mode: "lines+markers",
-        marker: {
-          size: 6,
-        },
-      }))}
-      layout={{
-        autosize: true,
-        xaxis: {
-          tickformat: "%Y-%m-%d",
-          tickmode: "array",
-          tickvals: sentimentData.map((item) => item.gsmssTimeCreated),
-          tickangle: -20,
-        },
-        yaxis: {
-          title: "Percentage (%)",
-        },
-        legend: {
-          orientation: "v",
-          x: 1.1,
-          y: 1,
-        },
-        margin: {
-          l: 50,
-          r: 10,
-          t: 10,
-          b: 50, 
-        },
-        paper_bgcolor: "rgba(0, 0, 0, 0)",
-        plot_bgcolor: "rgba(0, 0, 0, 0)",
-      }}
-      config={{
-        displayModeBar: false,
-        
-      }}
-      style={{ width: "full", height: "250px" }}
-    />
-      </div>
+      {!sentimentData || sentimentData.length === 0 ? (
+        <div className="w-full">
+          <div className="flex items-center justify-center text-center">
+            <p className="text-gray-500 dark:text-gray-400 mt-10">
+              No weekly sentiment trends data available, please check back later.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="w-full">
+          <p className="text-sm text-center text-gray-600 dark:text-gray-300">
+            * Hover over a point to see its exact value. *
+          </p>
+          <p className="text-sm text-center mb-2 text-gray-600 dark:text-gray-300">
+            * Click the legend to toggle visibility of specific data. *
+          </p>
+
+          <Plot
+            data={plotDataFlat.map((trace) => ({
+              ...trace,
+              mode: "lines+markers",
+              marker: {
+                size: 6,
+              },
+            }))}
+            layout={{
+              autosize: true,
+              xaxis: {
+                tickformat: "%Y-%m-%d",
+                tickmode: "array",
+                tickvals: Array.isArray(sentimentData) ? sentimentData.map((item) => item.gsmssTimeCreated) : [],
+                color: isDark ? '#ffffff' : '#000000',
+                tickfont: { color: isDark ? '#ffffff' : '#000000' },
+                gridcolor: isDark ? 'rgba(255, 255, 255, 0.2)' : '#e5e5e5'
+              },
+              yaxis: {
+                title: "Percentage (%)",
+                color: isDark ? '#ffffff' : '#000000',
+                tickfont: { color: isDark ? '#ffffff' : '#000000' },
+                gridcolor: isDark ? 'rgba(255, 255, 255, 0.2)' : '#e5e5e5'
+              },
+              legend: {
+                orientation: "h",
+                x: 0.5,
+                y: -0.15,
+                xanchor: "center",
+                yanchor: "top",
+                font: { color: isDark ? '#ffffff' : '#000000' }
+              },
+              margin: {
+                l: 50,
+                r: 10,
+                t: 0,
+                b: 0,
+              },
+              paper_bgcolor: "rgba(0, 0, 0, 0)",
+              plot_bgcolor: "rgba(0, 0, 0, 0)",
+            }}
+            config={{
+              displayModeBar: false,
+            }}
+            style={{ width: "100%", height: "250px" }}
+          />
+        </div>
+      )}
     </div>
   );
 };

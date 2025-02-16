@@ -1,24 +1,26 @@
+/**
+ * This component displays the vaccine coverage rate for the selected vaccine type.
+ * It displays the coverage data in either a bar chart or a line chart depending on the data.
+ * The component is displayed on the dashboard page.
+ */
 import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
 import { fetchData } from '@/utils/api.js';
 import DataSource from './DataSource';
+import PlaceHolder from "./PlaceHolder";
 
 export default function VaxCoverage({ selectedVaccine }) {
     const [vaccineCoverage, setVaccineCoverage] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const dataSource = {
-        websiteName: "ESR",
-        URL: "https://www.esr.cri.nz/expertise/public-health/infectious-disease-intelligence-surveillance/",
-    };
-
+    // Fetch vaccine coverage data
     useEffect(() => {
         const getVaxCoverage = async () => {
             if (!selectedVaccine?.vaccineId) return;
 
             setLoading(true);
             try {
-                const data = await fetchData(`/vaccine/coverageRate/vacId?vaccineId=${selectedVaccine.vaccineId}`);
+                const data = await fetchData(`/vaccine/coverage-rate/vac-id?vaccineId=${selectedVaccine.vaccineId}`);
                 if (data && Array.isArray(data)) {
                     setVaccineCoverage(data);
                 }
@@ -41,9 +43,9 @@ export default function VaxCoverage({ selectedVaccine }) {
             name: dose.vdName === 'dose1' ? 'First Dose' :
                 dose.vdName === 'dose2' ? 'Second Dose' :
                     dose.vdName === 'dose3' ? 'Third Dose' :
-                        dose.vdName === 'AtLeastOneDose' ? 'At Least One Dose' :
-                            dose.vdName === 'CompletePrimarySeries' ? 'Complete Primary Series' :
-                                dose.vdName === 'AtLeastOneBooster' ? 'At Least One Booster' :
+                        dose.vdName === 'AtLeastOneDose' ? 'At Least<br> One Dose' :
+                            dose.vdName === 'CompletePrimarySeries' ? 'Complete<br> Primary Series' :
+                                dose.vdName === 'AtLeastOneBooster' ? 'At Least<br> One Booster' :
                                     dose.vdName,
             rate: dose.vacCoverageRateVOList[0]?.vcrAnnualRate * 100 || 0
         }));
@@ -56,17 +58,21 @@ export default function VaxCoverage({ selectedVaccine }) {
 
     // Process data for line chart
     const processLineChartData = () => {
-        const firstDoseData = vaccineCoverage.find(d => d.vdName === 'dose1' || d.vdName === 'AtLeastOneDose');
+        const firstDoseData = vaccineCoverage.find(d => d.vdName === 'dose1' || d.vdName === 'AtLeastOneDose' || d.vdName === 'FemaleFirstDose');
         const firstDoseYears = firstDoseData?.vacCoverageRateVOList.map(d => d.vcrYear) || [];
         const firstDoseRates = firstDoseData?.vacCoverageRateVOList.map(d => d.vcrAnnualRate) || [];
 
-        const secondDoseData = vaccineCoverage.find(d => d.vdName === 'dose2' || d.vdName === 'CompletePrimarySeries');
+        const secondDoseData = vaccineCoverage.find(d => d.vdName === 'dose2' || d.vdName === 'CompletePrimarySeries' || d.vdName === 'FemaleLastDose');
         const secondDoseYears = secondDoseData?.vacCoverageRateVOList.map(d => d.vcrYear) || [];
         const secondDoseRates = secondDoseData?.vacCoverageRateVOList.map(d => d.vcrAnnualRate) || [];
 
-        const thirdDoseData = vaccineCoverage.find(d => d.vdName === 'dose3' || d.vdName === 'AtLeastOneBooster');
+        const thirdDoseData = vaccineCoverage.find(d => d.vdName === 'dose3' || d.vdName === 'AtLeastOneBooster' || d.vdName === 'MaleFirstDose');
         const thirdDoseYears = thirdDoseData?.vacCoverageRateVOList.map(d => d.vcrYear) || [];
         const thirdDoseRates = thirdDoseData?.vacCoverageRateVOList.map(d => d.vcrAnnualRate) || [];
+
+        const fourthDoseData = vaccineCoverage.find(d => d.vdName === 'dose4' || d.vdName === 'MaleLastDose');
+        const fourthDoseYears = fourthDoseData?.vacCoverageRateVOList.map(d => d.vcrYear) || [];
+        const fourthDoseRates = fourthDoseData?.vacCoverageRateVOList.map(d => d.vcrAnnualRate) || [];
 
         const data = [
             {
@@ -74,7 +80,7 @@ export default function VaxCoverage({ selectedVaccine }) {
                 y: firstDoseRates,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: firstDoseData?.vdName === 'dose1' ? '1st Dose' : 'At Least One Dose',
+                name: firstDoseData?.vdName,
                 line: { color: 'rgba(75, 192, 192, 1)', width: 3 },
                 fill: 'tozeroy',
                 fillcolor: 'rgba(75, 192, 192, 0.2)',
@@ -87,7 +93,7 @@ export default function VaxCoverage({ selectedVaccine }) {
                 y: secondDoseRates,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: secondDoseData?.vdName === 'dose2' ? '2nd Dose' : 'Complete Primary Series',
+                name: secondDoseData?.vdName,
                 line: { color: 'rgba(255, 99, 132, 1)', width: 3 },
                 fill: 'tozeroy',
                 fillcolor: 'rgba(255, 99, 132, 0.2)',
@@ -100,10 +106,23 @@ export default function VaxCoverage({ selectedVaccine }) {
                 y: thirdDoseRates,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: thirdDoseData?.vdName === 'dose3' ? '3rd Dose' : 'At Least One Booster',
+                name: thirdDoseData?.vdName,
                 line: { color: 'rgba(255, 206, 86, 1)', width: 3 },
                 fill: 'tozeroy',
                 fillcolor: 'rgba(255, 206, 86, 0.2)',
+            });
+        }
+
+        if (fourthDoseData) {
+            data.push({
+                x: fourthDoseYears,
+                y: fourthDoseRates,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: fourthDoseData?.vdName,
+                line: { color: 'rgba(40, 167, 69, 1)', width: 3 },
+                fill: 'tozeroy',
+                fillcolor: 'rgba(40, 167, 69, 0.2)',
             });
         }
 
@@ -114,6 +133,19 @@ export default function VaxCoverage({ selectedVaccine }) {
         return (
             <div className="h-full p-4 flex flex-col">
                 <div className="text-gray-500">Loading vaccine coverage data...</div>
+            </div>
+        );
+    }
+
+    if (!vaccineCoverage || vaccineCoverage.length === 0) {
+        return (
+            <div className="h-full flex flex-col p-4">
+                <h1 className="text-xl font-bold font-PoppinsBold">Vaccine Coverage Rate</h1>
+                <div className="flex-1 relative">
+                    <div className="h-full flex items-center justify-center">
+                        <PlaceHolder />
+                    </div>
+                </div>
             </div>
         );
     }
@@ -142,10 +174,10 @@ export default function VaxCoverage({ selectedVaccine }) {
                 tickfont: { size: 12 },
             },
             yaxis: {
-                tickfont: { size: 12 },
+                tickfont: { size: 13 },
                 automargin: true,
             },
-            margin: { t: 60, l: 150, r: 30, b: 50 },
+            margin: { t: 60, l: 50, r: 20, b: 60 },
             paper_bgcolor: '#ffffff',
             plot_bgcolor: '#ffffff',
             autosize: true,
@@ -156,15 +188,27 @@ export default function VaxCoverage({ selectedVaccine }) {
         return (
             <div className="h-full flex flex-col p-4">
                 <div className="flex flex-row gap-2">
-                    <h1 className="text-xl font-bold font-PoppinsBold">Vaccine Coverage Rate</h1>
-                    <DataSource dataSource={dataSource} />
+                    <h1 className="text-xl font-bold font-PoppinsBold dark:text-cyan-300">Vaccine Coverage Rate</h1>
+                    {vaccineCoverage && <DataSource selectedVaccine={selectedVaccine} componentId="vax_cov" />}
                 </div>
 
-                <div className="flex-1 relative">
+                <div className="flex-1 relative mt-2">
                     <Plot
                         data={barData}
                         layout={barLayout}
-                        config={{ responsive: true }}
+                        config={{
+                            responsive: true,
+                            displayModeBar: true,
+                            displaylogo: false,
+                            modeBarButtons: [['toImage', 'zoom2d', 'pan2d', 'select2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d']],
+                            toImageButtonOptions: {
+                                format: 'png',
+                                filename: 'Vaccine Coverage Rate',
+                                height: 600,
+                                width: 800,
+                                scale: 2
+                            },
+                        }}
                         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                         useResizeHandler={true}
                     />
@@ -199,15 +243,27 @@ export default function VaxCoverage({ selectedVaccine }) {
     return (
         <div className="h-full flex flex-col p-4">
             <div className="flex flex-row gap-2">
-                <h1 className="text-xl font-bold font-PoppinsBold">Vaccine Coverage Rate</h1>
-                <DataSource dataSource={dataSource} />
+                <h1 className="text-xl font-bold font-PoppinsBold dark:text-cyan-300">Vaccine Coverage Rate</h1>
+                {vaccineCoverage && <DataSource selectedVaccine={selectedVaccine} componentId="vax_cov" />}
             </div>
 
-            <div className="flex-1 relative">
+            <div className="flex-1 relative mt-2">
                 <Plot
                     data={lineChartData}
                     layout={layout}
-                    config={{ responsive: true }}
+                    config={{
+                        responsive: true,
+                        displayModeBar: true,
+                        displaylogo: false,
+                        modeBarButtons: [['toImage', 'zoom2d', 'pan2d', 'select2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d']],
+                        toImageButtonOptions: {
+                            format: 'png',
+                            filename: 'Vaccine Coverage Rate',
+                            height: 600,
+                            width: 800,
+                            scale: 2
+                        },
+                    }}
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                     useResizeHandler={true}
                 />

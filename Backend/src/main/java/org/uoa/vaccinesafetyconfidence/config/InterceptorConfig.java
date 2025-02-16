@@ -13,7 +13,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor()).addPathPatterns("/**");    // 拦截所有请求，通过判断是否有 @LoginRequired 注解 决定是否需要登录
     }
 
-
     @Bean
     public LoginInterceptor loginInterceptor() {
         return new LoginInterceptor();

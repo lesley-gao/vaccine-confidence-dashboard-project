@@ -17,4 +17,6 @@ public class RegisterVO {
 
     private String userFullName;
 
+    private String verificationCode;
+
 }

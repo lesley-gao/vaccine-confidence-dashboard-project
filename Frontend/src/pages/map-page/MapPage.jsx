@@ -1,3 +1,8 @@
+/**
+ * This component is the map page of the application.
+ * It provides an interactive map interface for finding immunisation service locations,
+ * filtering by vaccine type and pharmacies, and displaying search results dynamically.
+ */
 import React, { useEffect, useState } from 'react';
 import ProviderSelector from "@/pages/map-page/components/ProviderSelector";
 import MedicalCentersList from "@/pages/map-page/components/MedicalCentersList";
@@ -5,7 +10,6 @@ import ServiceLocationsMap from "./components/ServiceLocationsMap";
 import { fetchData } from "@/utils/api";
 
 export default function MapPage() {
-
     const [serviceLocations, setServiceLocations] = useState([]);
     const [filteredLocations, setFilteredLocations] = useState([]);
     const [searchedLocations, setSearchedLocations] = useState([]);
@@ -13,12 +17,13 @@ export default function MapPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [mapSelectedVaccine, setMapSelectedVaccine] = useState(null);
     const [selectedCenter, setSelectedCenter] = useState(null);
-   // const [pharmacyLocations, setPharmacyLocations] = useState(null);
+    const [showPharmacyOnly, setShowPharmacyOnly] = useState(false);
 
+    // fetch all locations
     const fetchAllLocations = async () => {
         setIsLoading(true);
         try {
-            const data = await fetchData('/healthProvider/all');
+            const data = await fetchData('/health-provider/all');
             setServiceLocations(data);
             setFilteredLocations(data);
             setSearchedLocations(data);
@@ -33,20 +38,28 @@ export default function MapPage() {
         }
     };
 
-    const fetchProvidersByVaccine = async (mapSelectedVaccine) => {
-
-        setMapSelectedVaccine(mapSelectedVaccine);
+    // fetch providers by vaccine
+    const fetchProvidersByVaccine = async (selectedVaccine) => {
+        setMapSelectedVaccine(selectedVaccine);
         setIsLoading(true);
 
         try {
-            if (mapSelectedVaccine) {
-                const data = await fetchData(`/healthProvider/filter/id?vaccineId=${mapSelectedVaccine.vaccineId}`);
-                setServiceLocations(data);
-                setFilteredLocations(data);
-                setSearchedLocations(data);
+            let data;
+            if (selectedVaccine) {
+                data = await fetchData(`/health-provider/filter/vac-id?vaccineId=${selectedVaccine.vaccineId}`);
             } else {
-                await fetchAllLocations();
+                data = await fetchData('/health-provider/all');
             }
+
+            // if showPharmacyOnly checkbox is ticked, filter the data to show only pharmacies; Otherwise, show all locations
+            const filteredData = showPharmacyOnly
+                ? data.filter(location => location.hpType === 'Pharmacy Service')
+                : data;
+
+            setServiceLocations(filteredData);
+            setFilteredLocations(filteredData);
+            setSearchedLocations(filteredData);
+            setIsSearchActive(false);
         } catch (error) {
             console.error('Error fetching locations:', error);
             throw error;
@@ -55,16 +68,35 @@ export default function MapPage() {
         }
     };
 
-    const handlePharmacyFilter = (data) => {
-        if (data) {
-            setServiceLocations(data);
-            setFilteredLocations(data);
-            setSearchedLocations(data);
-        } else {
-            fetchProvidersByVaccine(mapSelectedVaccine);
+    // handle pharmacy filter
+    const handlePharmacyFilter = async (checked) => {
+        setShowPharmacyOnly(checked);
+        setIsLoading(true);
+
+        try {
+            let data;
+            if (mapSelectedVaccine) {
+                data = await fetchData(`/health-provider/filter/vac-id?vaccineId=${mapSelectedVaccine.vaccineId}`);
+            } else {
+                data = await fetchData('/health-provider/all');
+            }
+
+            const filteredData = checked
+                ? data.filter(location => location.hpType === 'Pharmacy Service')
+                : data;
+
+            setServiceLocations(filteredData);
+            setFilteredLocations(filteredData);
+            setSearchedLocations(filteredData);
+            setIsSearchActive(false);
+        } catch (error) {
+            console.error('Error handling pharmacy filter:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
+    // handle location search
     const handleLocationSearch = (searchTerm) => {
         if (!searchTerm.trim()) {
             setIsSearchActive(false);
@@ -105,7 +137,7 @@ export default function MapPage() {
         setFilteredLocations(filtered);
     };
 
-    // Load all locations initially
+     // load all locations initially
     useEffect(() => {
         fetchAllLocations();
     }, []);
@@ -119,10 +151,10 @@ export default function MapPage() {
                     className="w-full mb-4 rounded-xl transition-all duration-300 shadow-md"
                 />
                 <div className="absolute top-1/2 left-10 -translate-y-1/2 font-bold">
-                    <p className="text-2xl text-white uppercase mb-2">
+                    <p className="text-2xl text-white uppercase mb-2 max-lg:text-lg">
                         Immunisation Services
                     </p>
-                    <p className='text-indigo-900 text-lg'>
+                    <p className='text-indigo-900 text-lg max-lg:text-sm max-md:hidden'>
                         Use the map below to find an immunisation site
                     </p>
                 </div>
@@ -132,6 +164,7 @@ export default function MapPage() {
                 <div className="lg:col-span-5 component-card p-4">
                     <ProviderSelector
                         mapSelectedVaccine={mapSelectedVaccine}
+                        showPharmacyOnly={showPharmacyOnly}
                         onVaccineSelect={fetchProvidersByVaccine}
                         onSearch={handleLocationSearch}
                         onPharmacyFilter={handlePharmacyFilter}

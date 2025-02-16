@@ -50,6 +50,7 @@ public class HealthProviderServiceImpl implements HealthProviderService {
         }
         // 查询所有的Health Provider
         List<HealthProvider> healthProviderList = healthProviderMapper.selectByIds(healthProviderUuids);
+        log.info(vaccineId + "的行数为： " + healthProviderList.size());
         return healthProviderList;
     }
 

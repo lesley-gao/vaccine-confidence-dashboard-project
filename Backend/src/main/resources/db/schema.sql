@@ -2,15 +2,15 @@
 
 CREATE DATABASE IF NOT EXISTS miles_vax_confidence CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-USE miles_vax_confidence_test;
+USE miles_vax_confidence;
 
 -- SQL DDL used to create the CREATE TABLE VACCINE_T
 CREATE TABLE IF NOT EXISTS `VACCINE_T`(
     `vac_id_pk` INT NOT NULL AUTO_INCREMENT,
     `vac_type` VARCHAR(255),
-    `vac_efficacy` VARCHAR(1000),
+    `vac_efficacy` VARCHAR(2046),
     `vac_severe_cases` INT,
-    `vac_description` VARCHAR(1022),
+    `vac_description` VARCHAR(2046),
     PRIMARY KEY (`vac_id_pk`)
 );
 
@@ -114,6 +114,7 @@ CREATE TABLE IF NOT EXISTS `USER_ACCOUNT_T`(
     `user_role` NUMERIC(2,0) NOT NULL,
     `user_time_created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `user_time_updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `user_verified` BOOLEAN DEFAULT FALSE,
      PRIMARY KEY (`user_uid_pk`)
 );
 
@@ -174,8 +175,7 @@ CREATE TABLE IF NOT EXISTS `USER_SUBSCRIPTION_T`(
     `vac_id_pk` INT NOT NULL,
     `usc_time_created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (`user_uid_pk`, `vac_id_pk`),
-    FOREIGN KEY (`vac_id_pk`) REFERENCES VACCINE_T (`vac_id_pk`)
-    ON DELETE CASCADE,
+    -- ON DELETE CASCADE,
     PRIMARY KEY (`usc_id_pk`)
 );
 
@@ -188,4 +188,13 @@ CREATE TABLE IF NOT EXISTS `COMPONENT_DATA_SOURCE_T`(
     `cds_website_name` VARCHAR(127) NOT NULL,
     `cds_website_url` VARCHAR(2046) NOT NULL,
     PRIMARY KEY (`cds_id_pk`)
+);
+
+-- SQL DDL used to create the CREATE TABLE DISEASE_R0_T
+CREATE TABLE IF NOT EXISTS `DISEASE_R0_T`(
+    `dr0_id_pk` INT NOT NULL AUTO_INCREMENT,
+    `disea_id_pk` INT NOT NULL,
+    `dr0_min` NUMERIC(5,2),
+    `dr0_max` NUMERIC(5,2),
+    PRIMARY KEY (`dr0_id_pk`)
 );

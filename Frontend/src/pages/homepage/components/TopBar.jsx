@@ -1,43 +1,71 @@
+/**
+ * This is the top navigation bar of the website on the Homepage. 
+ * It contains the logo, navigation links, and the login button. 
+ */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAppContext } from "@/context/AppContextProvider.jsx";
 
-function TopBar() {
-
+function TopBar({ activeEntry, setActiveEntry }) {
   const { user } = useAppContext();
 
+  const navigationItems = [
+    { title: "Dashboard", path: "/dashboard" },
+    { title: "Social Media", path: "/socialmedia" },
+    { title: "Survey", path: "/survey" },
+    { title: "Map", displayTitle: "Vaccine Map", path: "/map" },
+  ];
+
+  const handleNavigation = (title) => {
+    setActiveEntry(title);
+  };
+
+
   return (
-    <div className="relative z-50">
+    <div className="relative z-50 m-auto w-[90%] mt-5">
+      <div className="h-auto min-h-[65px] rounded-[50px] flex flex-col max-sm:items-center sm:flex-row items-center justify-between bg-white bg-opacity-30 shadow-md backdrop-blur-[10px] px-6 py-2 max-sm:py-4 max-sm:gap-4 sm:gap-14 dark:bg-slate-600 dark:border dark:border-slate-900">
 
-      {/* Top Bar */}
-      <div className="absolute left-1/2 top-5 w-[92%] h-[65px] rounded-[50px] flex items-center justify-between bg-white bg-opacity-30 shadow-md backdrop-blur-[10px] transform -translate-x-1/2">
-
-        {/* VaccineView Logo */}
-        <div className="absolute left-[25px] flex flex-row items-center gap-2">
-          <div className="w-[42px] h-[40px]">
-            <img src="/image/logo.png" alt="logo" />
-          </div>
-          <div className="text-[#151d48] text-[28px] font-BaiJamjureeBold leading-[150%]">
+        {/* Logo Section */}
+        <div className="flex items-center gap-2 max-sm:w-full sm:w-[20%] justify-center">
+          <img src="/image/logo.png" alt="logo" className="w-[42px] h-[40px]" />
+          <div className="text-[#151d48] dark:text-white text-[20px] font-BaiJamjureeBold leading-[150%]">
             VaccineView
           </div>
         </div>
 
-        {/* in-middle button */}
-        <div className="absolute left-1/2 w-[55%] transform -translate-x-1/2 flex items-center justify-between ">
-          <button className="text-[#152063] text-[20px] font-BaiJamjureeLight hover:scale-105 transition-transform duration-500 "><a href="/dashboard">Dashboard</a></button>
-          <button className="text-[#152063] text-[20px] font-BaiJamjureeLight hover:scale-105 transition-transform duration-500 "><a href="/survey">Survey</a></button>
-          <button className="text-[#152063] text-[20px] font-BaiJamjureeLight hover:scale-105 transition-transform duration-500 "><a href="/map">Vaccine Map</a></button>
-          <button className="text-[#152063] text-[20px] font-BaiJamjureeLight hover:scale-105 transition-transform duration-500 "><a href="/socialmedia">Social Media</a></button>
+
+        {/* Navigation Links */}
+        <div className="max-sm:w-full sm:w-[60%] flex justify-center">
+          <div className="w-full max-sm:flex max-sm:flex-row max-sm:justify-center max-sm:overflow-x-auto max-sm:gap-4 sm:flex sm:justify-between sm:gap-8 items-center">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.title}
+                to={item.path}
+                onClick={() => handleNavigation(item.title)}
+                className={`text-[#152063]  dark:text-slate-200 text-[20px] font-BaiJamjureeLight max-md:text-[16px] whitespace-nowrap hover:scale-105 transition-transform duration-500 ${activeEntry === item.title ? "font-bold" : ""
+                  }`}
+              >
+                {item.displayTitle || item.title}
+              </Link>
+            ))}
+          </div>
         </div>
 
-        <div className="absolute right-[30px] flex items-center">
-          <button className="w-[140px] h-[45px] rounded-[25px] bg-gradient-to-r from-[#152063] to-[#3949ab] shadow-[0px_5px_15px_rgba(0,0,0,0.3)] flex items-center justify-center hover:scale-105 hover:shadow-[0px_5px_5px_rgba(0,0,0,0.5),0_0_5px_#4a90e2] transition-all duration-500 relative overflow-hidden">
-            <div className="text-white text-[20px] font-BaiJamjureeLight relative z-10">
-              {user ? <Link to="/profile">Hi, {user.username.slice(0, 9)}</Link> : <Link to="/login">Log In</Link>}
+
+        {/* Log In Button */}
+        <div className="max-sm:w-full sm:w-[20%] flex justify-center sm:justify-end">
+          <button className="w-[100px] h-[45px] rounded-[25px] bg-gradient-to-r from-[#152063] to-[#3949ab] shadow-md flex items-center justify-center hover:scale-105 hover:shadow-lg transition-all duration-500 relative overflow-hidden">
+            <div className="text-white text-[20px] max-md:text-[16px] font-BaiJamjureeLight relative z-10">
+              {user ? (
+                <Link to="/profile" onClick={() => handleNavigation("Profile")}>
+                  Hi, {user.username.slice(0, 5)}
+                </Link>
+              ) : (
+                <Link to="/login">Log In</Link>
+              )}
             </div>
           </button>
         </div>
-
       </div>
     </div>
   );

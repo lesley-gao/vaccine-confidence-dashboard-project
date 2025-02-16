@@ -1,5 +1,7 @@
-// This component displays a Google Map with vaccination service locations in New Zealand.
-// It allows users to view markers for each location and interact with them via InfoWindows.
+/**
+ * This component displays a Google Map with vaccination service locations in New Zealand.
+ * It allows users to view markers for each location and interact with them via InfoWindows.
+ */
 import React, { useState, useMemo, useCallback, useRef, useEffect, } from 'react';
 import { GoogleMap, useLoadScript, MarkerF, InfoWindowF } from '@react-google-maps/api';
 import { LuMapPin } from "react-icons/lu";
@@ -16,7 +18,6 @@ export default function ServiceLocationsMap({
     const [map, setMap] = useState(null);
     const timeoutRef = useRef(null); 
 
-    // Determine which locations to display
     const locationsToDisplay = (isSearchActive && searchedLocations.length >= 1)
         ? searchedLocations
         : locations;
@@ -77,12 +78,11 @@ export default function ServiceLocationsMap({
         onMarkerClick(location);
     }, [onMarkerClick]);
 
-
     // Function that runs when the map is loaded.
+    // Only set initial bounds if not in search mode.
     const onLoad = useCallback((map) => {
         setMap(map);
 
-        // Only set initial bounds if not in search mode
         if (!isSearchActive) {
             const initialBounds = map.getBounds();
             if (initialBounds) {
@@ -147,7 +147,7 @@ export default function ServiceLocationsMap({
                                             {selectedCenter.hpName}
                                         </h3>
                                         <p className="text-sm text-gray-500">
-                                            Medical Center
+                                           {selectedCenter.hpType}
                                         </p>
                                     </div>
                                 </div>
@@ -182,8 +182,7 @@ export default function ServiceLocationsMap({
                 </GoogleMap>
             </div>
 
-
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow text-sm">
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow text-sm dark:text-black">
                 {isLoading ? 'Loading...' : `Showing ${locationsToDisplay.length} locations`}
             </div>
         </div>

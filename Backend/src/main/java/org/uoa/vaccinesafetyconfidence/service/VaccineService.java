@@ -11,13 +11,7 @@ public interface VaccineService {
 
     List<VaccineVO> getAllExistingVaccines();
 
-
     Vaccine searchVaccineById(Integer vaccineId);
-
-    String  getVaccineEfficacyById(Integer vaccineId);
-
-    String getVaccineAllInfoById(Integer vaccineId);
-
 
     List<VaccineDoseCoverageRateDTO> getVaccineDoseCoverageRate(Integer vaccineId);
 
@@ -28,8 +22,6 @@ public interface VaccineService {
     List<VCISurveyDetailed> getVCISurveyDetailedInfoOfAllVax();
 
     List<VCISurveyGeneral> getVCISurveyGeneralInfoByBinaryCountryCode(String binaryCountryCode);
-
-
 
     List<GeneralSocialMediaSentimentScore> getGeneralSocialMediaSentimentScore();
 

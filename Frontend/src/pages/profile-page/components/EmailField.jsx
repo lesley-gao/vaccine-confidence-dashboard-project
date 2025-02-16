@@ -1,3 +1,9 @@
+/**
+ * This component is an email field that allows users to change their email.
+ * It displays the current email and allows users to edit it.
+ * It provides validation for the new email and handles the save and cancel actions.
+ * It is used on the Profile page.
+ */
 import React, { useState } from "react";
 
 export default function EmailField({
@@ -27,7 +33,7 @@ export default function EmailField({
     } else if (tempEmail.newEmail === currentEmail) {
       errors.newEmail = "The email cannot be the same as the current one";
     } else if (!emailRegex.test(tempEmail.newEmail)) {
-        errors.newEmail = "Please enter a valid email address";
+      errors.newEmail = "Please enter a valid email address";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -49,17 +55,17 @@ export default function EmailField({
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <label className="text-gray-700 font-medium">Email</label>
+        <label className="text-gray-700 font-medium dark:text-white">Email</label>
         <div className="flex items-center gap-2">
           <button
-            className="font-bold text-sm text-[#152063] cursor-pointer"
+            className="font-semibold text-sm text-[#152063] cursor-pointer dark:text-cyan-300"
             onClick={editable ? handleCancelClick : onReset}
           >
             {editable ? "Cancel" : "Reset"}
           </button>
           {editable && (
             <button
-              className="font-bold text-sm text-[#152063] cursor-pointer"
+              className="font-bold text-sm text-[#152063] cursor-pointer dark:text-cyan-300"
               onClick={handlecheckSave}
             >
               Save
@@ -69,23 +75,20 @@ export default function EmailField({
       </div>
 
       {editable ? (
-        <div className="mt-2">
-          <div className="mb-3">
-            <input
-              type="text"
-              value={tempEmail.newEmail}
-              onChange={(e) => handleEmailChange("newEmail", e.target.value)}
-              placeholder="Enter your new email"
-              className={`w-full p-2 border rounded ${
-                validationError.newEmail ? "border-red-500" : "border-gray-300"
+        <div>
+          <input
+            type="text"
+            value={tempEmail.newEmail}
+            onChange={(e) => handleEmailChange("newEmail", e.target.value)}
+            placeholder="Enter your new email"
+            className={`w-full p-2 border rounded dark:text-black ${validationError.newEmail ? "border-red-500" : "border-gray-300"
               }`}
-            />
-            {validationError.newEmail && (
-              <p className="text-red-500 text-sm mt-1">
-                {validationError.newEmail}
-              </p>
-            )}
-          </div>
+          />
+          {validationError.newEmail && (
+            <p className="text-red-500 text-sm mt-1">
+              {validationError.newEmail}
+            </p>
+          )}
         </div>
       ) : (
         <input

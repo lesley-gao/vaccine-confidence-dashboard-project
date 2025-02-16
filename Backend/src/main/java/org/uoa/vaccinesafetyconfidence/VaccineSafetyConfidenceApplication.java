@@ -11,9 +11,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 @SpringBootApplication
 @MapperScan("org.uoa.vaccinesafetyconfidence.mapper")
 public class VaccineSafetyConfidenceApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(VaccineSafetyConfidenceApplication.class, args);
     }
-
 }

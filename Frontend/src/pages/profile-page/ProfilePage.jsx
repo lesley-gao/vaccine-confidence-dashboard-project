@@ -1,3 +1,8 @@
+/**
+ * This component is the profile page of the application.
+ * It displays the user's profile information, including their avatar, username, email, password, and vaccine subscriptions.
+ * The user can update their profile information, including their avatar, username, email, password, and vaccine subscriptions.
+ */
 import React, { useState, useEffect } from "react";
 import AvatarPicker from "./components/AvatarPicker";
 import UsernameField from "./components/UsernameField";
@@ -6,11 +11,7 @@ import EmailField from "./components/EmailField";
 import SubscriptionsField from "./components/SubscriptionsField";
 import ConfirmationModal from "./components/ConfirmationModal";
 import { useAppContext } from "@/context/AppContextProvider";
-import { fetchData } from "@/utils/api.js";
-import { postData } from "@/utils/api";
-import { putData } from "@/utils/api";
-import { patchData } from "@/utils/api";
-import { deleteData } from "@/utils/api";
+import { fetchData, postData, putData, patchData, deleteData } from "@/utils/api.js";
 
 export default function ProfilePage() {
   const { user, setUser } = useAppContext();
@@ -35,7 +36,7 @@ export default function ProfilePage() {
         }
         setToken(token);
 
-        const userData = await fetchData("/user/profile", {
+        const userData = await fetchData("/account/profile/get", {
           headers: {
             token: token,
           },
@@ -43,8 +44,6 @@ export default function ProfilePage() {
         setUserInfo(userData);
         setTempInfo(userData);
 
-        console.log("Fetched userInfo:", userData);
-  
         const subscriptionData = await fetchData("/user/subscription/get", {
           headers: {
             token: token,
@@ -53,7 +52,7 @@ export default function ProfilePage() {
 
         if (Array.isArray(subscriptionData)) {
           setSubscriptions(subscriptionData);
-          setTempSubscriptions(subscriptionData); 
+          setTempSubscriptions(subscriptionData);
         } else {
           console.error("Unexpected subscription response format:", subscriptionData);
         }
@@ -62,79 +61,79 @@ export default function ProfilePage() {
         console.error("Error fetching user data:", error.message);
       }
     };
-  
+
     fetchUserData();
-  }, [user]);
+  }, []);
 
 
-const saveAvatar = async (newAvatar) => {
-  const updatedInfo = { ...tempInfo, userAvatarPath: newAvatar };
-  try {
-    const response = await postData("/user/update/profile", updatedInfo, {
-      headers: { token },
-    });
-
-    console.log("Response from updating avatar:", updatedInfo);
-
-    if (response.code === 0) {
-      setUserInfo((prev) => ({
-        ...prev,
-        userAvatarPath: newAvatar,
-      }));
-      setTempInfo((prev) => ({
-        ...prev,
-        userAvatarPath: newAvatar,
-      }));
-
-      setUser({
-        ...user,
-        avatarPath: newAvatar
+  const saveAvatar = async (newAvatar) => {
+    const updatedInfo = { ...tempInfo, userAvatarPath: newAvatar };
+    try {
+      const response = await postData("/account/profile/update", updatedInfo, {
+        headers: { token },
       });
 
-      alert("Avatar updated successfully!");
-    } else {
-      throw new Error(response.message || "Failed to update avatar. Please try again.");
+      if (response.code === 0) {
+        setUserInfo((prev) => ({
+          ...prev,
+          userAvatarPath: newAvatar,
+        }));
+        setTempInfo((prev) => ({
+          ...prev,
+          userAvatarPath: newAvatar,
+        }));
+
+        setUser({
+          ...user,
+          avatarPath: newAvatar,
+        });
+
+        alert("Avatar updated successfully!");
+      } else {
+        throw new Error(response.message || "Failed to update avatar. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating avatar:", error.message || error);
+      alert("Failed to update avatar.");
     }
-  } catch (error) {
-    console.error("Error updating avatar:", error.message || error);
-    alert("Failed to update avatar.");
-  }
-};
+  };
 
-const saveUserInfo = async () => {
-  try {
-    const response = await postData("/user/update/profile", tempInfo, {
-      headers: {
-        token: token,
-      },
-    });
-    
-    if (response.code === 0) {
-      setUserInfo((prev) => ({
-        ...prev,
-        ...tempInfo,
-      }));
-
-      setUser({
-        ...user,
-        username: tempInfo.userUsername
+  const saveUserInfo = async () => {
+    try {
+      const response = await postData("/account/profile/update", tempInfo, {
+        headers: {
+          token: token,
+        },
       });
 
-      alert("Profile updated successfully!");
-      setEditableField(null);  
-    } else {
-      throw new Error(response.message || "Failed to update profile. Please try again.");
+      if (response.code === 0) {
+        setUserInfo((prev) => ({
+          ...prev,
+          ...tempInfo,
+        }));
+
+        setUser({
+          ...user,
+          username: tempInfo.userUsername,
+          userEmail: tempInfo.userEmail
+        });
+
+        alert("Profile updated successfully!");
+        setEditableField(null);
+
+      } else {
+        throw new Error(response.message || "Failed to update profile. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error in handleSave:", error);
+      alert("An error occurred: " + (error.message || "Please try again."));
     }
-  } catch (error) {
-    console.error("Error in handleSave:", error);
-    alert("An error occurred: " + (error.message || "Please try again."));
   }
-}
 
   const savePassword = async () => {
     try {
       const response = await patchData(
-        `/user/update/password?oldPwd=${encodeURIComponent(tempPassword.oldPassword)}&newPwd=${encodeURIComponent(tempPassword.newPassword)}`, // 拼接 query string
+        `/account/password/update?oldPwd=${encodeURIComponent(tempPassword.oldPassword)}&newPwd=${encodeURIComponent(tempPassword.newPassword)}`, // 拼接 query string
         null,
         {
           headers: {
@@ -142,7 +141,7 @@ const saveUserInfo = async () => {
           },
         }
       );
-  
+
       if (response.code === 0) {
         alert("Password updated successfully!");
         setEditableField(null);
@@ -158,17 +157,17 @@ const saveUserInfo = async () => {
       });
     }
   };
-  
+
   const saveSubscriptions = async () => {
     try {
       const addedSubscriptions = tempSubscriptions.filter(
         (temp) => !subscriptions.some((sub) => sub.vacIdPk === temp.vacIdPk)
       );
-  
+
       const removedSubscriptions = subscriptions.filter(
         (sub) => !tempSubscriptions.some((temp) => temp.vacIdPk === sub.vacIdPk)
       );
-  
+
       for (const sub of addedSubscriptions) {
         if (!sub.vacIdPk) {
           console.error("vaccineId is missing for added subscription:", sub);
@@ -187,7 +186,7 @@ const saveUserInfo = async () => {
           headers: { token },
         });
       }
-  
+
       setSubscriptions(tempSubscriptions);
       alert("Subscriptions updated successfully!");
       setEditableField(null);
@@ -196,7 +195,7 @@ const saveUserInfo = async () => {
       alert("Failed to save subscriptions.");
     }
   };
-  
+
   const handleSave = async () => {
     try {
       if (editableField === "userUsername" || editableField === "userEmail") {
@@ -212,7 +211,7 @@ const saveUserInfo = async () => {
       setShowConfirmationModal(false);
     }
   };
-  
+
 
   const handleCancel = () => {
     setUserInfo(tempInfo);
@@ -231,18 +230,18 @@ const saveUserInfo = async () => {
   }
 
   return (
-    <div className="flex items-center justify-center w-full h-screen">
-      <div className="relative z-30 flex flex-row items-center justify-center gap-20 w-[80%] p-10 pr-10 backdrop-blur-lg bg-white/80 rounded-lg shadow-lg">
+    <div className="flex items-center justify-center w-full min-h-screen px-4 md:px-8 lg:px-12 py-10 ">
+      <div className="relative z-30 flex flex-col md:flex-row items-center justify-center gap-20 w-[80%] p-10 pr-10 backdrop-blur-lg bg-white/80 rounded-lg shadow-lg dark:bg-slate-800 dark:border dark:border-slate-200 dark:shadow-slate-500">
         <div className="w-full">
-        <AvatarPicker
-          selectedAvatar={userInfo?.userAvatarPath || ""}
-          onAvatarChange={saveAvatar}
-        />
+          <AvatarPicker
+            selectedAvatar={userInfo?.userAvatarPath || ""}
+            onAvatarChange={saveAvatar}
+          />
         </div>
 
         <div className="mx-auto my-10 w-full">
           <p className="text-[35px] font-bold">
-            <span className="text-[55px] font-bold text-[#152063]">Hi,</span> {userInfo.userUsername}
+            <span className="text-[55px] font-bold text-[#3949ab] dark:text-cyan-300">Hi,</span> {userInfo.userUsername}
           </p>
 
           <div className="mt-4 flex flex-col gap-6">

@@ -1,3 +1,7 @@
+/**
+ * This component displays information about the developers of the application.
+ * It is used on the homepage.
+ */
 const developers = [
   {
     name: "FuXiang (Shawn) Xu",
@@ -28,7 +32,7 @@ const developers = [
 
 const AboutUs = () => {
   return (
-    <div className="mt-12 text-white flex justify-center space-x-8">
+    <div className="mt-6 text-white flex justify-center space-x-8">
       {developers.map((developer, index) => (
         <div key={index} className="flex flex-col items-center">
           <img

@@ -1,5 +1,8 @@
+/**
+ * This component displays the map image with a button to see more information about vaccination locations.
+ * It is used on the homepage.
+ */
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
-
 
 export default function MapGuide() {
     return (

@@ -1,3 +1,7 @@
+/**
+ * This component is used to display the Social Media Page which tracks vaccine-related sentiment on social media platforms
+ * using word frequency analysis and sentiment trend visualization.
+ */
 import React, { useState, useEffect } from "react";
 import CloudWord from "./components/CloudWords";
 import Ranking from "./components/Ranking";
@@ -18,10 +22,10 @@ export default function SocialMediaPage() {
       setLoading(true);
       try {
         const wordResponse = await fetchData(
-          "/vaccine/socialMedia/wordFrequency/general"
+          "/vaccine/social-media/word-frequency/general-vac"
         );
         const sentimentResponse = await fetchData(
-          "/vaccine/socialMedia/sentimentScore/general"
+          "/vaccine/social-media/sentiment-score/general-vac"
         );
 
         // Process word data
@@ -111,31 +115,31 @@ export default function SocialMediaPage() {
       <div className='relative'>
         <img src="/image/socialmedia.jpg" alt="survey" className="w-full mb-4 rounded-xl transition-all duration-300 shadow-md opacity-85" />
         <div className="absolute top-1/2 left-10 -translate-y-1/2 font-bold">
-          <p className="text-2xl text-white uppercase mb-2">
+          <p className="text-2xl text-white uppercase mb-2 max-lg:text-lg">
             Vaccine Attitudes on Social Media
           </p>
-          <p className="text-indigo-900 text-lg">
-            Track vaccine confidence and sentiment trends across platforms
+          <p className="text-indigo-900 text-lg max-lg:text-sm max-md:hidden">
+            Track sentiment trends across platforms
           </p>
         </div>
       </div>
 
-      <div className="flex flex-row gap-8 justify-center">
+      <div className="flex flex-row gap-8 justify-center mb-4 max-md:flex-col max-md:gap-3 max-md:ml-2">
         <PlatformSelectButton
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
           platforms={filteredPlatforms}
         />
         <div className="flex items-center gap-4">
-          <span className="font-bold text-gray-700">Recently update time:</span>
-          <div className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-800">
+          <span className="font-bold text-gray-700 dark:text-white">Last updated:</span>
+          <div className="text-gray-700 dark:text-white">
             {latestUpdateTime}
           </div>
         </div>
       </div>
 
-      <div className="flex flex-row w-full items-stretch py-4 gap-4">
-        <div className="flex-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="w-full">
           <CloudWord
             wordData={wordData}
             platforms={filteredPlatforms}
@@ -144,7 +148,7 @@ export default function SocialMediaPage() {
           />
         </div>
 
-        <div className="flex flex-col flex-1 gap-4">
+        <div className="w-full flex flex-col gap-4">
           <Ranking
             wordData={wordData}
             platforms={filteredPlatforms}

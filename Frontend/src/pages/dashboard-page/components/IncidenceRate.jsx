@@ -1,17 +1,17 @@
+/**
+ * This component displays the incidence rates of diseases related to a selected vaccine over a specified year range (2016-2022).
+ * It fetches and visualizes the data as a line chart, allowing users to track the trends of disease incidence.
+ */
 import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
 import { fetchData } from '@/utils/api.js'
 import DataSource from "./DataSource";
+import PlaceHolder from "./PlaceHolder";
 
 function IncidenceRate({ selectedVaccine }) {
 
   const [incidenceRates, setIncidenceRates] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const dataSource = {
-    websiteName: "ESR",
-    URL: "https://www.esr.cri.nz/expertise/public-health/infectious-disease-intelligence-surveillance/",
-  };
 
   // Set the year range（2016-2022）
   const startYear = 2016;
@@ -24,7 +24,6 @@ function IncidenceRate({ selectedVaccine }) {
       setLoading(true);
       try {
         const data = await fetchData(`/disease/all?vaccineId=${selectedVaccine.vaccineId}`);
-        console.log('Fetched incidence rates:', data);
 
         if (data && Array.isArray(data)) {
 
@@ -51,7 +50,7 @@ function IncidenceRate({ selectedVaccine }) {
     };
 
     getIncidenceRates();
-  }, [selectedVaccine]); // re-fetch incidence rates when the selected vaccine changes
+  }, [selectedVaccine]);
 
   if (loading) {
     return (
@@ -100,18 +99,36 @@ function IncidenceRate({ selectedVaccine }) {
   return (
     <div className="h-full p-4 flex flex-col">
       <div className="flex flex-row gap-2 mb-3">
-        <p className='text-xl font-bold font-PoppinsBold '>Incidence Rates ({`${startYear}`}-{`${finishYear}`})</p>
-        <DataSource dataSource={dataSource} />
+        <p className='text-xl font-bold font-PoppinsBold dark:text-cyan-300'>Incidence Rates ({`${startYear}`}-{`${finishYear}`})</p>
+        {incidenceRates && incidenceRates.length > 0 && <DataSource selectedVaccine={selectedVaccine} componentId="inc_rate" />}
       </div>
-      <div className="flex-1">
-        <Plot
-          data={dataToDisplay}
-          layout={layout}
-          style={{ width: '100%', height: '100%' }}
-          config={{ responsive: true }}
-          useResizeHandler={true}
-        />
-      </div>
+
+      {!incidenceRates || incidenceRates.length === 0 ? (
+        <div className="h-full flex items-center justify-center">
+          <PlaceHolder />
+        </div>
+      ) : (
+        <div className="flex-1">
+          <Plot
+            data={dataToDisplay}
+            layout={layout}
+            style={{ width: '100%', height: '100%' }}
+            config={{
+              responsive: true,
+              displayModeBar: true,
+              displaylogo: false,
+              modeBarButtons: [['toImage', 'zoom2d', 'pan2d', 'select2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d']],
+              toImageButtonOptions: {
+                format: 'png',
+                filename: 'Incidence Rates',
+                height: 600,
+                width: 800,
+                scale: 2
+              },
+            }}
+            useResizeHandler={true}
+          />
+        </div>)}
     </div>
   );
 }

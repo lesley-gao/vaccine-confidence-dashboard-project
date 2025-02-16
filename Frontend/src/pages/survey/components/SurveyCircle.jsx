@@ -1,5 +1,7 @@
-// This component is the cirle on the survey page 
-// It allows the user to select the year, question and demographic of the survey they want to view.
+/**
+ * This component is the cirle on the survey page
+ * It allows the user to select the year, question and demographic of the survey they want to view.
+ */
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
@@ -66,16 +68,16 @@ export default function SurveyCircle({ size, optionType, position, onChange, dat
           <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
             <defs>
               <linearGradient id="circleGradient" gradientTransform="rotate(90)">
-                <stop offset="0%" stopColor="#152063" />
-                <stop offset="33%" stopColor="#6674DB" />
-                <stop offset="66%" stopColor="#3949AB" />
-                <stop offset="100%" stopColor="#A8B4FF" />
+                <stop offset="0%" stopColor="#152063" stopOpacity={0.9} />
+                <stop offset="33%" stopColor="#9333ea" stopOpacity={0.9} />
+                <stop offset="66%" stopColor="#3b82f6" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="#2dd4bf" stopOpacity={1} />
               </linearGradient>
             </defs>
             <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="url(#circleGradient)" strokeWidth={strokeWidth} />
           </svg>
 
-          <div className="absolute inset-0 flex items-center justify-center text-lg text-center font-semibold text-[#152063]" style={{ padding: `0 ${size * 0.2}px` }}>
+          <div className="absolute inset-0 flex items-center justify-center text-lg text-center font-semibold text-[#152063] dark:text-cyan-300" style={{ padding: `0 ${size * 0.2}px` }}>
             {selectedValue}
           </div>
         </div>
@@ -86,15 +88,16 @@ export default function SurveyCircle({ size, optionType, position, onChange, dat
         animate={isOpen ? "open" : "closed"}
         variants={{
           open: {
-            clipPath: "inset(0% 0% 0% 0% round 10px)",
+            clipPath: "inset(0% 0% 0% 0% round 5px)",
             transition: { type: "spring", bounce: 0, duration: 0.4, delayChildren: 0.1, staggerChildren: 0.03 }
           },
           closed: {
-            clipPath: "inset(10% 50% 90% 50% round 10px)",
+            clipPath: "inset(10% 50% 90% 50% round 5px)",
             transition: { type: "spring", bounce: 0, duration: 0.2 }
           }
         }}
-        className="absolute top-1/2 -translate-y-1/2 bg-white p-2 min-w-[200px] border border-[#6674DB] shadow-md z-10 text-center"
+        className="absolute bg-white p-2 min-w-[200px] border border-[#6674DB] shadow-md z-10 text-center top-1/2 -translate-y-1/2
+         max-md:left-1/2 max-md:-translate-x-1/2 rounded-[5px] "
         style={{ [position]: `${size + 10}px`, pointerEvents: isOpen ? "auto" : "none" }}
       >
         {optionsList.map((option) => (

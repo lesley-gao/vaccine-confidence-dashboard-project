@@ -1,26 +1,20 @@
 package org.uoa.vaccinesafetyconfidence.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.uoa.vaccinesafetyconfidence.exception.BusinessException;
 import org.uoa.vaccinesafetyconfidence.mapper.UserAccountMapper;
 import org.uoa.vaccinesafetyconfidence.mapper.UserSubscriptionMapper;
 import org.uoa.vaccinesafetyconfidence.mapper.VaccineMapper;
-import org.uoa.vaccinesafetyconfidence.pojo.dto.UserProfileDTO;
-import org.uoa.vaccinesafetyconfidence.pojo.entity.UserAccount;
 import org.uoa.vaccinesafetyconfidence.pojo.entity.UserSubscription;
 import org.uoa.vaccinesafetyconfidence.pojo.entity.Vaccine;
 import org.uoa.vaccinesafetyconfidence.result.ResponseEnum;
 import org.uoa.vaccinesafetyconfidence.service.UserService;
 import org.uoa.vaccinesafetyconfidence.utils.JwtUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service

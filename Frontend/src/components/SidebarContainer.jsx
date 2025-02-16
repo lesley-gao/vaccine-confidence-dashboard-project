@@ -1,18 +1,19 @@
-// This is the compoment that displays the sidebar of the dashboard page.
-// When the user hovers over the sidebar, the sidebar expands to show the full list of links.
-// When the user moves the mouse away from the sidebar, the sidebar collapses to show only the icons.
+/**
+ * This component is a container that holds the sidebar and mini sidebar components.
+ * The sidebar component is displayed when the user hovers over the sidebar.
+ * The mini sidebar component is displayed when the user moves the mouse away from the sidebar.
+ */
 import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import MiniSidebar from "./MiniSidebar";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function SidebarContainer() {
-    const [activeEntry, setActiveEntry] = useState("Dashboard");
+export default function SidebarContainer({ activeEntry, setActiveEntry }) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
         <div
-            className="relative "
+            className="sticky top-0 h-screen"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -20,20 +21,20 @@ export default function SidebarContainer() {
                 {isHovered ? (
                     <motion.div
                         key="sidebar"
-                        initial={{ width: "5rem", opacity: 0, scale: 0.95 }}
-                        animate={{ width: "14rem", opacity: 1, scale: 1 }}
-                        exit={{ width: "4rem", opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                        initial={{ width: "5rem", x: 0, opacity: 0 }}
+                        animate={{ width: "14rem", x: 1, opacity: 1 }}
+                        exit={{ width: "5rem", x: 0, opacity: 0 }}
+                        transition={{ duration: 0.4, type: "spring", stiffness: 200, damping: 25, ease: "easeInOut" }}
                     >
                         <Sidebar activeEntry={activeEntry} setActiveEntry={setActiveEntry} />
                     </motion.div>
                 ) : (
                     <motion.div
                         key="miniSidebar"
-                        initial={{ width: "14rem", opacity: 0, scale: 0.95 }}
-                        animate={{ width: "5rem", opacity: 1, scale: 1 }}
-                        exit={{ width: "14rem", opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                        initial={{ width: "14rem", x: 0, opacity: 0 }}
+                        animate={{ width: "5rem", x: 1, opacity: 1 }}
+                        exit={{ width: "14rem", x: 0, opacity: 0 }}
+                        transition={{ duration: 0.4, type: "spring", stiffness: 200, damping: 25, ease: "easeInOut" }}
                     >
                         <MiniSidebar activeEntry={activeEntry} setActiveEntry={setActiveEntry} />
                     </motion.div>

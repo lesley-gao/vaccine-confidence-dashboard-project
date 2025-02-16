@@ -1,7 +1,5 @@
 package org.uoa.vaccinesafetyconfidence.service;
 
-
-import org.uoa.vaccinesafetyconfidence.pojo.dto.UserProfileDTO;
 import org.uoa.vaccinesafetyconfidence.pojo.entity.Vaccine;
 
 import java.util.List;
@@ -13,7 +11,5 @@ public interface UserService {
     List<Vaccine> getUserSubscriptions(String token);
 
     void deleteASubscription(String token, Integer vaccineId);
-
-
 
 }

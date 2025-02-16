@@ -1,7 +1,10 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react'
+/**
+ * This context provider manages the global state related to user data and vaccine data.
+ * This context is used for storing user authentication information (from localStorage) and vaccine types.
+ */
+import React, { createContext, useState, useContext } from 'react'
 import { useVaccine } from '@/hooks/useVaccine';
 
-// Create a context for sharing global data
 export const AppContext = createContext();
 
 // Custom hook to access the AppContext easily
@@ -25,7 +28,7 @@ export function AppContextProvider({ children }) {
             const storedUser = localStorage.getItem('userData');
 
             if (!storedUser) {
-                return null;    // Return null if no user data is found in localStorage
+                return null;
             }
             return JSON.parse(storedUser);
         } catch (error) {

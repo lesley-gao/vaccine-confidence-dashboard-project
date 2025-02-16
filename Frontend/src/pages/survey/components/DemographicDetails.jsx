@@ -1,9 +1,30 @@
-import { FormatTextdirectionLToR } from '@mui/icons-material';
+/**
+ * This component displays demographic details for a selected demographic type, comparing responses for a selected question in 2018 and 2023.
+ * It is used on the Survey page.
+ */
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function DemographicDetails({ demoData, question, selectedDemoType }) {
     const [comparisonData, setComparisonData] = useState([]);
+    const [isDark, setIsDark] = useState(document.documentElement.classList.contains('dark'));
+
+    useEffect(() => {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    setIsDark(document.documentElement.classList.contains('dark'));
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     useEffect(() => {
         if (!demoData || !Array.isArray(demoData)) return;
@@ -30,9 +51,9 @@ export default function DemographicDetails({ demoData, question, selectedDemoTyp
             }
         };
 
-        // Group data by category using reduce
+        // Group data by category
         const groupedData = filteredData.reduce((acc, item) => {
-            // If this category doesn't exist yet, initialize it
+             // If this category doesn't exist yet, initialize it
             if (!acc[item.vsdDmgType]) {
                 acc[item.vsdDmgType] = {
                     category: item.vsdDmgType,
@@ -51,9 +72,7 @@ export default function DemographicDetails({ demoData, question, selectedDemoTyp
             return acc;
         }, {});
 
-        // Convert the grouped data object to an array
         const transformedData = Object.values(groupedData);
-
         setComparisonData(transformedData);
     }, [demoData, question, selectedDemoType]);
 
@@ -65,8 +84,8 @@ export default function DemographicDetails({ demoData, question, selectedDemoTyp
     const customTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-4 border border-gray-200 rounded shadow">
-                    <p className="font-semibold">{label}</p>
+                <div className="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-600 rounded shadow">
+                    <p className="font-semibold text-gray-900 dark:text-white">{label}</p>
                     {payload.map((entry, index) => (
                         <p key={index} style={{ color: entry.color }}>
                             {`${entry.name === 'year2018' ? '2018' : '2023'}: ${entry.value.toFixed(1)}%`}
@@ -80,31 +99,45 @@ export default function DemographicDetails({ demoData, question, selectedDemoTyp
 
     return (
         <div className="w-full h-[480px] p-4">
-            <h2 className="text-center text-lg font-semibold mb-4 text-indigo-900">
+            <h2 className="text-center text-lg font-semibold mb-4 text-indigo-900 dark:text-cyan-300">
                 {getChartTitle()}
             </h2>
             {comparisonData.length > 0 && (
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={comparisonData} margin={{ top: 20, right: 30, left: 60, bottom: 40 }} >
-                        <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                    <BarChart 
+                        data={comparisonData} 
+                        margin={{ top: 20, right: 30, left: 60, bottom: 40 }}
+                    >
+                        <CartesianGrid 
+                            strokeDasharray="3 3" 
+                            opacity={0.1}
+                            stroke={isDark ? 'rgba(255, 255, 255, 0.2)' : '#e5e5e5'}
+                        />
                         <XAxis
                             dataKey="category"
+                            tick={{ fill: isDark ? '#ffffff' : '#4b5563' }}
+                            stroke={isDark ? '#ffffff' : '#4b5563'}
                             label={{
                                 value: selectedDemoType,
                                 position: 'bottom',
                                 offset: 20,
-                                style: { fill: '#666' }
+                                style: { fill: isDark ? '#ffffff' : '#4b5563' }
                             }}
                         />
                         <YAxis
                             domain={[0, 100]}
                             tickFormatter={(value) => `${value}%`}
+                            tick={{ fill: isDark ? '#ffffff' : '#4b5563' }}
+                            stroke={isDark ? '#ffffff' : '#4b5563'}
                             label={{
                                 value: 'Percentage of Respondents Who Agree (%)',
                                 angle: -90,
                                 position: 'insideLeft',
                                 offset: -30,
-                                style: { textAnchor: 'middle', fill: '#666' }
+                                style: { 
+                                    textAnchor: 'middle', 
+                                    fill: isDark ? '#ffffff' : '#4b5563'
+                                }
                             }}
                         />
                         <Tooltip content={customTooltip} />
@@ -115,16 +148,22 @@ export default function DemographicDetails({ demoData, question, selectedDemoTyp
                                 { value: '2018', type: 'rect', color: '#4F46E5' },
                                 { value: '2023', type: 'rect', color: '#2DD4BF' }
                             ]}
-                            wrapperStyle={{ paddingLeft: '40px' }}
+                            wrapperStyle={{ 
+                                paddingLeft: '40px',
+                                color: isDark ? '#ffffff' : '#4b5563'
+                            }}
                             iconSize={15}
-                            formatter={(value) => <span className="px-4">{value}</span>}
+                            formatter={(value) => (
+                                <span className={`px-4 ${isDark ? 'text-white' : 'text-gray-600'}`}>
+                                    {value}
+                                </span>
+                            )}
                         />
                         <Bar dataKey="year2018" name="2018" fill="#4F46E5" barSize={30} />
                         <Bar dataKey="year2023" name="2023" fill="#2DD4BF" barSize={30} />
                     </BarChart>
                 </ResponsiveContainer>
-            )
-            }
+            )}
         </div>
     );
 }

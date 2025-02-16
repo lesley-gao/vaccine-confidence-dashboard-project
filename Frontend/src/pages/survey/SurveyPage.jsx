@@ -1,3 +1,7 @@
+/**
+ * This page provides an interactive interface for exploring vaccine confidence survey data, 
+ * including year, question, and demographic-based analysis.
+ */
 import SurveyCircle from "@/pages/survey/components/SurveyCircle"
 import ConfidencePct from "@/pages/survey/components/ConfidencePct"
 import SurveyChart from "@/pages/survey/components/SurveyChart"
@@ -22,9 +26,8 @@ export default function SurveyPage() {
         const getConfidenceData = async () => {
             setLoading(true);
             try {
-                const data = await fetchData(`/vaccine/VCISurvey/VaxByCoountryCode/general?binaryCountryCode=NZ`);
+                const data = await fetchData(`/vaccine/vci-survey/general/country-code?binaryCountryCode=NZ`);
                 setConfidenceData(data || []);
-                console.log('Fetched confidence data:', data);
             } catch (error) {
                 console.error('Failed to fetch confidence data:', error);
             } finally {
@@ -39,9 +42,8 @@ export default function SurveyPage() {
         const getDemoData = async () => {
             setLoading(true);
             try {
-                const data = await fetchData(`/vaccine/VCISurvey/allVax/detailed`);
+                const data = await fetchData(`/vaccine/vci-survey/detailed/all`);
                 setDemoData(data || []);
-                // console.log('Fetched demographic data:', data);
             } catch (error) {
                 console.error('Failed to fetch demographic data:', error);
                 setDemoData([]);
@@ -80,22 +82,6 @@ export default function SurveyPage() {
         }
     }, [selectedYear, selectedQuestion, confidenceData]);
 
-    // Get the demographic options for the selected year and demographic type
-    const getDemographicOptions = (year, demoType) => {
-        if (!demoData.length) return [];
-
-        const options = new Set(
-            demoData
-                .filter(item =>
-                    item.vsdYear === year &&
-                    item.vsdDemographics === demoType
-                )
-                .map(item => item.vsdDmgType)
-        );
-
-        return Array.from(options);
-    };
-
     // Get the demographic results for the selected year, question, and demographic type
     useEffect(() => {
         const getDemoResults = () => {
@@ -105,13 +91,11 @@ export default function SurveyPage() {
                     return [];
                 }
 
-                // Filter the data based on the selected year and demographic type
                 const filteredData = demoData.filter(item =>
                     item.vsdYear === Number(selectedYear) &&
                     item.vsdDemographics === selectedDemoType
                 );
 
-                // Get the value based on the selected question
                 const getValue = (item) => {
                     switch (selectedQuestion) {
                         case "Vaccines are important for children.":
@@ -145,41 +129,35 @@ export default function SurveyPage() {
     }, [selectedYear, selectedQuestion, selectedDemoType, demoData]);
 
     const handleYearSelection = (option) => { setSelectedYear(option) };
-
     const handleQuestionSelection = (option) => { setSelectedQuestion(option) };
-
     const handleDemoTypeSelection = (option) => { setSelectedDemoType(option) };
 
     return (
         <div className="relative min-h-screen ">
 
             {/* Background image */}
-            {/* <div className="absolute inset-0 bg-[url('/image/nz_map.jpg')] bg-contain bg-no-repeat bg-center opacity-5 z-0
-            transition-opacity duration-500 hover:opacity-10" /> */}
+            <div className="absolute inset-0 bg-[url('/image/nz_map.jpg')] bg-cover bg-no-repeat bg-center opacity-5 z-0 
+            transition-opacity duration-500 hover:opacity-10 "/>
 
             <div className='relative'>
                 <img src="/image/surveyimg.jpg" alt="survey" className="w-full mb-4 rounded-xl transition-all duration-300 shadow-md" />
                 <div className="absolute top-1/2 left-10 -translate-y-1/2 font-bold">
-                    <p className="text-2xl text-white uppercase mb-2">
+                    <p className="text-2xl text-white uppercase mb-2 max-lg:text-lg">
                         Vaccine Confidence Survey
                     </p>
-                    <p className="text-indigo-900 text-lg">
+                    <p className="text-indigo-900 text-lg max-lg:text-sm max-md:hidden">
                         Explore confidence in vaccines in New Zealand
                     </p>
                 </div>
             </div>
 
-            {/* Header section*/}
-            <p className="text-gray-700 p-4 mb-6">Confidence in vaccines in New Zealand has increased since the first surveys carried out there. In 2018, 69% of people felt that vaccines were safe while 79% thought they were effective. 84% said they believed it was important for children to have vaccines.</p>
-            {/* <div className="component-card p-8 mb-8">
-                <p className="font-bold text-3xl text-indigo-900 mb-4">New Zealand</p>
-                <p className="text-gray-700 leading-relaxed">Confidence in vaccines in New Zealand has increased since the first surveys carried out there. In 2018, 69% of people felt that vaccines were safe while 79% thought they were effective. 84% said they believed it was important for children to have vaccines.</p>
-            </div> */}
-
             {/* Main content area */}
+            <p className="text-gray-700 p-4 mb-6 md:text-lg dark:text-white">Please select a year, question, and demographic to explore people's confidence in vaccine-related statements.
+            </p>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Left side */}
-                <div className="lg:col-span-5 space-y-6">
+                <div className="lg:col-span-5 space-y-6 max-md:space-y-16">
                     <div className="flex justify-start pl-[10%] mb-5 transform hover:scale-105 transition-transform duration-300">
                         <SurveyCircle size={200} optionType={"Year"} position={"left"} onChange={handleYearSelection} data={confidenceData} />
                     </div>
@@ -194,30 +172,39 @@ export default function SurveyPage() {
                 {/* right side */}
                 <div className="lg:col-span-7 space-y-8">
                     <div className="backdrop-blur-sm component-card">
-                        <div className="flex items-center justify-between gap-8">
+                        <div className="flex items-center justify-between gap-8 max-md:flex-col">
                             <SurveyResult year={selectedYear} question={selectedQuestion} />
                             <div className="flex items-center gap-4">
-                                <span className="text-2xl font-bold text-indigo-900">Agree:</span>
+                                <span className="text-2xl font-bold text-indigo-900 dark:text-cyan-300">Agree:</span>
                                 <ConfidencePct percentage={result} size={200} />
                             </div>
                         </div>
-                        <p className="text-gray-600 p-5"> * In {selectedYear}, {result}% of New Zealanders agreed that {selectedQuestion.toLowerCase()}</p>
+                        <p className="text-gray-600 p-5 dark:text-slate-200"> * In {selectedYear}, {result}% of New Zealanders agreed that {selectedQuestion.toLowerCase()}</p>
                     </div>
 
-                    <div className="h-[450px] component-card">
+                    <div className="h-[450px] backdrop-blur-sm component-card">
                         <SurveyChart data={demoResults} selectedDemoType={selectedDemoType} year={selectedYear} question={selectedQuestion} />
                     </div>
                 </div>
             </div>
 
             {/* Bottom section */}
-            {Number(selectedYear) !== 2022 && (<div className="h-[550px] component-card mt-8">
+            {Number(selectedYear) !== 2022 && (<div className="h-[550px] component-card mt-8 backdrop-blur-sm">
                 <DemographicDetails
                     demoData={demoData}
                     question={selectedQuestion}
                     selectedDemoType={selectedDemoType}
                 />
             </div>)}
+
+            <div className="p-4 mt-8 ">
+                <p className="text-gray-700 leading-relaxed dark:text-white relative z-10">
+                    <span className="font-bold">Please note: </span>
+                    The data on this page is collected from the <a href="https://www.vaccineconfidence.org/vci/map/" target="_blank" className="underline hover:text-cyan-300"><i>Vaccine Confidence Project™</i></a> , a global research initiative that monitors public confidence in vaccines.
+                    All data is used solely for non-commercial purposes. Copyright and intellectual property rights belong to the <i>Vaccine Confidence Project™</i>.
+                </p>
+            </div>
+
         </div>
     )
 }

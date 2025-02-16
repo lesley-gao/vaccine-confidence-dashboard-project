@@ -1,178 +1,141 @@
-// ResetPasswordForm.jsx
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+/**
+ * This component is used to reset the user's password.
+ * It allows the user to enter a verification code sent to their email and set a new password.
+ * If successful, the user is redirected to the login page.
+ */
+import React, {useEffect, useState} from 'react';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import Logo from '@/components/Logo';
+import PasswordImg from '@/components/PasswordImg';
+import {BsFillCheckSquareFill} from 'react-icons/bs'
+import {patchData} from '@/utils/api';
 
 export default function ResetPassword() {
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const token = searchParams.get('token');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [email, setEmail] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-    const [passwords, setPasswords] = useState({
-        newPassword: '',
-        confirmPassword: ''
-    });
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isTokenValid, setIsTokenValid] = useState(false);
-    const [isValidating, setIsValidating] = useState(true);
+  // get email from route state, if no email, redirect to forgot password page
+  useEffect(() => {
+    const emailFromState = location.state?.email;
+    if (!emailFromState) {
+      navigate('/forgot-password');
+      return;
+    }
+    setEmail(emailFromState);
+  }, [location.state, navigate]);
 
-    // Validate reset token when component mounts
-    useEffect(() => {
-        const validateToken = async () => {
-            if (!token) {
-                setError('Invalid or missing reset token');
-                setIsValidating(false);
-                return;
-            }
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
 
-            try {
-                const response = await axios.post(
-                    `${API_BASE_URL}/user/validate-reset-token`,
-                    { token }
-                );
-                setIsTokenValid(true);
-            } catch (err) {
-                setError('This password reset link is invalid or has expired');
-            } finally {
-                setIsValidating(false);
-            }
-        };
-
-        validateToken();
-    }, [token, API_BASE_URL]);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        // Validate passwords
-        if (passwords.newPassword !== passwords.confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
-
-        if (passwords.newPassword.length < 8) {
-            setError('Password must be at least 8 characters long');
-            return;
-        }
-
-        setIsSubmitting(true);
-        setError(null);
-
-        try {
-            await axios.post(`${API_BASE_URL}/user/reset-password`, {
-                token,
-                newPassword: passwords.newPassword
-            });
-
-            setSuccess(true);
-            // Clear form
-            setPasswords({ newPassword: '', confirmPassword: '' });
-
-        } catch (err) {
-            console.error('Reset password error:', err);
-            setError(err.response?.data?.message || 'Failed to reset password. Please try again.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    if (isValidating) {
-        return <div className="text-center">Validating reset link...</div>;
+    if (!verificationCode || !newPassword) {
+      setError('Please fill in all fields.');
+      return;
     }
 
-    if (!isTokenValid) {
-        return (
-            <div className="text-center">
-                <h2 className="text-2xl font-bold mb-4">Invalid Reset Link</h2>
-                <p className="text-red-500 mb-4">{error}</p>
-                <div className="mt-4">
-                    <Link to="/forgot-password" className="text-[#3949AB] hover:underline">
-                        Request a new reset link
-                    </Link>
-                </div>
-            </div>
-        );
+    if (newPassword.length < 6) {
+      setError("The new password must be at least 6 characters long.");
+      return;
+    }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+    if (!passwordRegex.test(newPassword)) {
+      setError("The new password must contain upper, lower case letters and numbers.");
+      return
     }
 
-    if (success) {
-        return (
+    setIsLoading(true);
+    setError(null);
 
+    try {
+      const data = await patchData(
+        `/account/password-reset/verify?email=${encodeURIComponent(email)}&verificationCode=${verificationCode}&newPwd=${newPassword}`
+      );
 
-            <div className="text-center">
-                <h2 className="text-2xl font-bold mb-4">Password Reset Successfully</h2>
-                <p className="mb-4">Your password has been reset. You can now log in with your new password.</p>
-                <div className="mt-4">
-                    <Link to="/login" className="text-[#3949AB] hover:underline">
-                        Go to Login
-                    </Link>
-                </div>
-            </div>
-
-        );
+      if (data.code === 0) {
+        setSuccess(true);
+        setTimeout(() => {
+          navigate('/login', {
+            state: {message: 'Password reset successful. Please login with your new password.'}
+          });
+        }, 3000);
+      } else {
+        throw new Error(data.message || 'Failed to reset password');
+      }
+    } catch (err) {
+      console.error('Error resetting password:', err);
+      setError(err.message || 'Failed to reset password. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    return (
-        <div className="text-md 2xl:text-lg">
+  return (
+    <div className="flex min-h-screen bg-gradient-to-b from-customTheme-light to-customTheme-dark">
+      <Logo/>
 
-            <Logo />
+      {/* Left Section */}
+      <div className="flex w-full md:w-3/5 items-center justify-center bg-white rounded-none md:rounded-r-[50px]">
+        <div className="w-3/5">
+          <h2 className="text-[25px] 2xl:text-3xl font-bold my-4 text-gray-800">
+            Reset Password
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Enter the verification code sent to your email and set your new password.
+          </p>
 
-            <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold">Reset Password</h2>
-                <p className="text-gray-600 mt-2">
-                    Please enter your new password.
-                </p>
+          <form className="flex flex-col gap-5" onSubmit={handleResetPassword}>
+            {error && (
+              <div className="text-red-500">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <p className="flex items-center gap-2 font-semibold text-green-600">
+                <BsFillCheckSquareFill/>
+                Password reset successful! Please login with your new password.
+              </p>
+            )}
+
+            <input
+              type="text"
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              placeholder="Enter verification code"
+              className="input-field py-5"
+              disabled={isLoading}
+            />
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter new password"
+              className="input-field py-5"
+              disabled={isLoading}
+            />
+
+            <button type="submit" className="submission-btn" disabled={isLoading}>
+              {isLoading ? 'Resetting password...' : 'Reset Password'}
+            </button>
+
+            <div className="text-center mt-4">
+              <Link to="/login" className="text-[#3949AB] hover:underline">
+                ← Back to Login
+              </Link>
             </div>
-
-            <form className="container" onSubmit={handleSubmit}>
-                <div className="flex flex-col gap-5 2xl:gap-10 mb-5 2xl:mb-10">
-                    {error && (
-                        <div className="text-red-500 mb-4">
-                            {error}
-                        </div>
-                    )}
-
-                    <input
-                        type="password"
-                        value={passwords.newPassword}
-                        onChange={(e) => setPasswords(prev => ({
-                            ...prev,
-                            newPassword: e.target.value
-                        }))}
-                        placeholder="New Password"
-                        className="w-full p-5 font-medium border border-b-slate-900 hover:border hover:border-slate-300 placeholder:opacity-60"
-                        disabled={isSubmitting}
-                    />
-
-                    <input
-                        type="password"
-                        value={passwords.confirmPassword}
-                        onChange={(e) => setPasswords(prev => ({
-                            ...prev,
-                            confirmPassword: e.target.value
-                        }))}
-                        placeholder="Confirm New Password"
-                        className="w-full p-5 font-medium border border-b-slate-900 hover:border hover:border-slate-300 placeholder:opacity-60"
-                        disabled={isSubmitting}
-                    />
-                </div>
-
-                <div className="mt-5">
-                    <button
-                        type="submit"
-                        className="submission-btn w-full"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? 'Resetting...' : 'Reset Password'}
-                    </button>
-                </div>
-            </form>
+          </form>
         </div>
+      </div>
 
-
-
-    );
+      {/* Right Section */}
+      <div className="hidden md:flex w-2/5 h-full min-h-screen items-center justify-center flex-col">
+        <PasswordImg className="flex-grow w-full"/>
+      </div>
+    </div>
+  );
 }

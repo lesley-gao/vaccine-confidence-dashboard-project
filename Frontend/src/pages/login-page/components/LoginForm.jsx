@@ -1,3 +1,9 @@
+/**
+ * This component is responsible for rendering the login form and handling user authentication.
+ * It includes fields for username and password, a "Remember Me" checkbox, and a "Forgot Password" link.
+ * The component sends the user credentials to the server for verification and logs the user in if the credentials are valid.
+ * It is used on the login page.
+ */
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import RememberPW from "@/pages/login-page/components/RememberPW";
@@ -7,7 +13,7 @@ import { postData } from "@/utils/api";
 export default function LoginForm() {
 
     const navigate = useNavigate();
-    const { setUser } = useAppContext();
+    const { user, setUser } = useAppContext();
     const [error, setError] = useState(null);
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -33,24 +39,22 @@ export default function LoginForm() {
         }
 
         try {
-            const response = await postData('/user/login', { username, password });
+            const response = await postData('/account/login', { username, password });
 
             if (response.code === 0) {
-
                 const userData = {
                     username: response.data.username,
                     role: response.data.role,
                     userUid: response.data.userUid,
                     token: response.data.token,
-                    avatarPath: response.data.avatarPath || "/avatars/default-avatar.jpg"
+                    avatarPath: response.data.avatarPath || user?.avatarPath || "/avatars/default-avatar.jpg"
                 };
                 
-                console.log('User logged in successfully:', userData);
                 setUser(userData);
 
                 if (rememberMe) {
-                    localStorage.setItem('rememberedUsername', username);   
-                } 
+                    localStorage.setItem('rememberedUsername', username);
+                }
 
                 navigate("/profile");
             } else {
@@ -66,6 +70,7 @@ export default function LoginForm() {
             setIsLoading(false);
         }
     };
+
 
     // Load remembered username if exists
     useEffect(() => {
@@ -92,7 +97,7 @@ export default function LoginForm() {
                         ref={usernameRef}
                         name="username"
                         id="username"
-                        className="input-field"
+                        className="input-field py-5"
                         disabled={isLoading}
                     />
 
@@ -102,7 +107,7 @@ export default function LoginForm() {
                         ref={passwordRef}
                         name="password"
                         id="password"
-                        className="input-field"
+                        className="input-field py-5"
                         disabled={isLoading}
                     />
                 </div>
@@ -115,10 +120,7 @@ export default function LoginForm() {
                 </div>
 
                 <div className="mt-5">
-                    <button
-                        className="submission-btn"
-                        disabled={isLoading}
-                    >
+                    <button className="submission-btn" disabled={isLoading} >
                         {isLoading ? 'Logging in...' : 'Log In'}
                     </button>
                 </div>
@@ -126,9 +128,7 @@ export default function LoginForm() {
 
             <div className="text-center text-gray-600 mt-4">
                 Don't have an account?
-                <span> <Link to="/signup" className="underline text-[#3949AB]">
-                    Sign up now
-                </Link> </span>
+                <span><Link to="/signup" className="underline text-[#3949AB]"> Sign up now </Link></span>
             </div>
         </div>
     );

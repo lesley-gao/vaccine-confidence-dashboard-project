@@ -1,3 +1,7 @@
+/**
+ * This component displays an attitude-based group icon with a tooltip explaining the sentiment classification when hovered.
+ * It is used on the SocialMedia page.
+ */
 import React, { useState } from "react";
 
 export default function GroupNote({ attitude }) {

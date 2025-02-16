@@ -1,5 +1,7 @@
 "use client";
-
+/**
+ * This component displays a list of notifications with animations.
+ */
 import { cn } from "@/lib/utils";
 import { AnimatedList } from "@/components/ui/animated-list";
 

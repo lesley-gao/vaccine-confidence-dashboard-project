@@ -1,7 +1,11 @@
+/**
+ * This component displays social media comments based on our own model.
+ * It fetches the comments data and displays the comments in a carousel format.
+ * The component is displayed on the homepage.
+ */
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import { cn } from "@/lib/utils";
 import Marquee from "@/components/ui/marquee";
-
 
 const reviews = [
     {
@@ -69,8 +73,7 @@ const reviews = [
 
 export default function ViewSocialMediaComments() {
     return (
-        <div className="flex flex-col items-center mb-20">
-            
+        <div className="flex flex-col items-center mb-20">  
             <div className="font-BaiJamjureeBold text-[#152063] text-[35px]">View the Social Media Comments Analysis</div>
             <div className="text-center font-BaiJamjureeLight text-[20px]">Social media vaccine discussion data based on our own model</div>
             
@@ -90,11 +93,8 @@ export default function ViewSocialMediaComments() {
                 ))}
             </Marquee>
             <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background"></div>
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
-            
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>         
             </div>
-
-        </div>
-        
+        </div> 
     )
 }

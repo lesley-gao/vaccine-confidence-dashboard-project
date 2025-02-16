@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSONObject;
 
 
-
 @Slf4j
 public class LoginInterceptor implements HandlerInterceptor{
     @Autowired
@@ -57,8 +56,8 @@ public class LoginInterceptor implements HandlerInterceptor{
                     response.setCharacterEncoding("UTF-8");
                     response.setContentType("application/json; charset=utf-8");
                     JSONObject res = new JSONObject();
-                    res.put("code",ResponseEnum.TOKEN_NOTUSEFUL_ERROR.getCode());
-                    res.put("message",ResponseEnum.TOKEN_NOTUSEFUL_ERROR.getMessage());
+                    res.put("code",ResponseEnum.TOKEN_INVALID_ERROR.getCode());
+                    res.put("message",ResponseEnum.TOKEN_INVALID_ERROR.getMessage());
                     PrintWriter out = null ;
                     out = response.getWriter();
                     out.write(res.toString());

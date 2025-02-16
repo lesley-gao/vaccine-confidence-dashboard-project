@@ -1,25 +1,17 @@
-// This component is used to select the vaccine type and search for vaccination services.
+/**
+ * This component is used to select the vaccine type and search for vaccination services.
+ */
 import { BiSearch } from "react-icons/bi";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppContext } from "@/context/AppContextProvider.jsx";
 import { useState, useEffect } from 'react';
-import { fetchData } from "@/utils/api";
 
-export default function ProviderSelector({ mapSelectedVaccine, onVaccineSelect, onSearch, onPharmacyFilter}) {
-
+export default function ProviderSelector({ mapSelectedVaccine, showPharmacyOnly, onVaccineSelect, onSearch, onPharmacyFilter }) {
     const { vaccineTypes } = useAppContext();
     const [searchTerm, setSearchTerm] = useState('');
-    const [showPharmacyOnly, setShowPharmacyOnly] = useState(false);
 
-    const handlePharmacyToggle = async (checked) => {
-        setShowPharmacyOnly(checked);
-        if (checked) {
-            const data = await fetchData('/healthProvider/filter/type?healthProviderType=Pharmacy%20Service');
-            onPharmacyFilter(data);
-            console.log("pharmacy data", data);
-        } else {
-            onPharmacyFilter(null);
-        }
+    const handlePharmacyToggle = (checked) => {
+        onPharmacyFilter(checked);
     };
 
     const handleSearchInput = (e) => {
@@ -38,6 +30,7 @@ export default function ProviderSelector({ mapSelectedVaccine, onVaccineSelect, 
         }
     };
 
+    // Reset search when vaccine selection changes
     useEffect(() => {
         setSearchTerm('');
         onSearch('');
@@ -60,12 +53,12 @@ export default function ProviderSelector({ mapSelectedVaccine, onVaccineSelect, 
                 </select>
 
                 <div className="flex items-center gap-2 whitespace-nowrap">
-                    <Checkbox id="pharmacy" checked={showPharmacyOnly} onCheckedChange={handlePharmacyToggle}/>
+                    <Checkbox id="pharmacy" checked={showPharmacyOnly} onCheckedChange={handlePharmacyToggle} />
                     <label
                         htmlFor="pharmacy"
-                        className="text-sm font-medium text-gray-900 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="text-sm font-medium text-gray-900 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 dark:text-white"
                     >
-                        Show Pharmacy Only
+                        Show Pharmacies Only
                     </label>
                 </div>
             </div>
@@ -76,7 +69,7 @@ export default function ProviderSelector({ mapSelectedVaccine, onVaccineSelect, 
                     value={searchTerm}
                     onChange={handleSearchInput}
                     placeholder="Search by service name, suburb or city"
-                    className="w-full border border-gray-300 rounded-md px-4 py-2.5 pl-10 focus:outline-none focus:ring-1 focus:ring-slate-700"
+                    className="w-full border border-gray-300 rounded-md px-4 py-2.5 pl-10 focus:outline-none focus:ring-1 focus:ring-slate-700 dark:text-black"
                 />
                 <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>

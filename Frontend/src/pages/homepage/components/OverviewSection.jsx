@@ -1,3 +1,7 @@
+/**
+ * This component displays the OurMission and FunctionGuide sections with a fade-in animation when they enter the viewport.
+ * It is used on the homepage.
+ */
 import { useEffect, useRef } from "react";
 import { FunctionGuide } from "./FunctionGuide";
 import OurMission from "./OurMission";
@@ -30,7 +34,7 @@ export default function OverviewSection() {
     }, []);
     
     return (
-        <div className="space-y-20">
+        <div className="space-y-20 ">
 
             <div
                 ref={(el) => sections.current[0] = el}

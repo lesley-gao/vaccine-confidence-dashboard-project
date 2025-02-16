@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.uoa.vaccinesafetyconfidence.exception.BusinessException;
 import org.uoa.vaccinesafetyconfidence.mapper.*;
-import org.uoa.vaccinesafetyconfidence.pojo.dto.VaccineDashboard;
 import org.uoa.vaccinesafetyconfidence.pojo.dto.VaccineDoseCoverageRateDTO;
 import org.uoa.vaccinesafetyconfidence.pojo.entity.*;
 import org.uoa.vaccinesafetyconfidence.pojo.vo.VacCoverageRateVO;
@@ -73,17 +72,7 @@ public class VaccineServiceImpl implements VaccineService {
         if (vaccineListSize == 0)
             throw new BusinessException(ResponseEnum.TABLE_EMPTY_ERROR);
 
-
         List<VaccineVO> vaccineVOList = ConverterUtils.convertList(vaccineList, VaccineVO.class);
-
-
-//        List<VaccineVO> vaccineVOList = new ArrayList<>(vaccineListSize);
-//        for (Vaccine vaccine:vaccineList){
-//            VaccineVO vaccineVO = new VaccineVO();
-//            vaccineVO.setVacId(vaccine.getVacIdPk());
-//            vaccineVO.setVacType(vaccine.getVacType());
-//            vaccineVOList.add(vaccineVO);
-//        }
         return vaccineVOList;
     }
 
@@ -97,19 +86,6 @@ public class VaccineServiceImpl implements VaccineService {
         }
         return vaccine;
     }
-
-
-    @Override
-    public String getVaccineEfficacyById(Integer vaccineId){
-
-        Vaccine vaccine = vaccineMapper.selectById(vaccineId);
-        if (vaccine == null){
-            log.error("要查找的疫苗ID不存在");
-            throw new BusinessException(ResponseEnum.NO_ENTITY_ERROR);
-        }
-        return vaccine.getVacEfficacy();
-    }
-
 
 
     @Override
@@ -141,9 +117,6 @@ public class VaccineServiceImpl implements VaccineService {
 //                vacCoverageRateVOList.add(vacCoverageRateVO);
 //            }
 
-
-
-
             vaccineDoseCoverageRateDTO.setVacCoverageRateVOList(vacCoverageRateVOList);
             vaccineDoseCoverageRateDTOList.add(vaccineDoseCoverageRateDTO);
         }
@@ -162,77 +135,16 @@ public class VaccineServiceImpl implements VaccineService {
         if (vacDevelopmentMilestoneList.size() == 0)
             throw new BusinessException(ResponseEnum.TABLE_EMPTY_ERROR);
 
-
-//        List<VacDevelopmentMilestoneVO> vacDevelopmentMilestoneVOList = new ArrayList<>(vacDevelopmentMilestoneList.size());
+        List<VacDevelopmentMilestoneVO> vacDevelopmentMilestoneVOList = ConverterUtils.convertList(vacDevelopmentMilestoneList, VacDevelopmentMilestoneVO.class);
+        //        List<VacDevelopmentMilestoneVO> vacDevelopmentMilestoneVOList = new ArrayList<>(vacDevelopmentMilestoneList.size());
 //        for (VacDevelopmentMilestone vacDevelopmentMilestone:vacDevelopmentMilestoneList){
 //            VacDevelopmentMilestoneVO vacDevelopmentMilestoneVO = new VacDevelopmentMilestoneVO();
 //            BeanUtils.copyProperties(vacDevelopmentMilestone, vacDevelopmentMilestoneVO);
 //            vacDevelopmentMilestoneVOList.add(vacDevelopmentMilestoneVO);
 //        }
-
-        List<VacDevelopmentMilestoneVO> vacDevelopmentMilestoneVOList = ConverterUtils.convertList(vacDevelopmentMilestoneList, VacDevelopmentMilestoneVO.class);
-
-
         return vacDevelopmentMilestoneVOList;
     }
 
-
-
-    @Override
-    public String getVaccineAllInfoById(Integer vaccineId){
-
-        Vaccine vaccine = vaccineMapper.selectById(vaccineId);
-        if (vaccine == null){
-            log.error("要查找的疫苗ID不存在");
-            throw new BusinessException(ResponseEnum.NO_ENTITY_ERROR);
-        }
-
-        VaccineDashboard vaccineDashboard = new VaccineDashboard();
-
-        // 在最终显示结果中，存入vaccine table中需要显示的信息
-        vaccineDashboard.setVacType(vaccine.getVacType());
-        vaccineDashboard.setVacEfficacy(vaccine.getVacEfficacy());
-        vaccineDashboard.setVacSevereCases(vaccine.getVacSevereCases());
-
-
-//        // 查询疫苗都有什么dose
-//        QueryWrapper<VacDose> vacDoseQueryWrapper = new QueryWrapper<>();
-//        vacDoseQueryWrapper.eq("vac_id_pk", vaccineId);
-//        List<VacDose> vacDoses = vacDoseMapper.selectList(vacDoseQueryWrapper);
-
-
-        // 查找与疫苗关联的疾病的id
-        QueryWrapper<DiseaseVaccine> diseaseVaccineQueryWrapper = new QueryWrapper<>();
-        diseaseVaccineQueryWrapper.eq("vac_id_pk", vaccineId);
-        List<DiseaseVaccine> diseaseVaccines = diseaseVaccineMapper.selectList(diseaseVaccineQueryWrapper);
-
-//        List<Disease> diseaseList = new ArrayList<>(diseaseVaccines.size());
-
-//        Vector<Disease> diseaseVector = new Vector<>(diseaseVaccines.size());
-
-        QueryWrapper<Disease> diseaseQueryWrapper = new QueryWrapper<>();
-
-//        diseaseMapper.selectBatchIds("")
-
-        List<Integer> diseaseIds = new ArrayList<>(diseaseVaccines.size());
-
-
-
-        for (DiseaseVaccine diseaseVaccine:diseaseVaccines){
-            diseaseIds.add(diseaseVaccine.getDiseaIdPk());
-
-//            diseaseQueryWrapper.or().eq("disea_id_pk", diseaseVaccine.getDisea_id_pk());
-
-//            diseaseList.add(diseaseMapper.selectById(diseaseVaccine.getDisea_id_pk()));
-
-        }
-
-        vaccineDashboard.setDiseaseList(diseaseMapper.selectBatchIds(diseaseIds));
-
-
-
-        return vaccineDashboard.toString();
-    }
 
 
     @Override
@@ -254,8 +166,6 @@ public class VaccineServiceImpl implements VaccineService {
         vciSurveyGeneralQueryWrapper.lambda().eq(VCISurveyGeneral::getVsgCountryCode, binaryCountryCode);
 
         List<VCISurveyGeneral> vciSurveyGeneralList = vciSurveyGeneralMapper.selectList(vciSurveyGeneralQueryWrapper);
-
-
         return vciSurveyGeneralList;
     }
 
@@ -268,24 +178,6 @@ public class VaccineServiceImpl implements VaccineService {
 
     @Override
     public List<GeneralSocialMediaWordFrequency> getGeneralSocialMediaWordFrequency() {
-
-
-
-//        QueryWrapper<GeneralSocialMediaWordFrequency> queryWrapper = new QueryWrapper<>();
-//
-//        // 假设你有一个时间戳字段 "timestamp_column" 作为排序依据
-//        queryWrapper.orderByDesc("timestamp_column");  // 按时间戳降序排列，最新的排在最前面
-//
-//        // 查询最新一条数据，limit 1
-//        queryWrapper.last("LIMIT 1");
-//
-//
-//        LambdaQueryWrapper<GeneralSocialMediaWordFrequency> gsmwfLambdaQuery = new LambdaQueryWrapper<>();
-//        gsmwfLambdaQuery.between()
-//
-//        generalSocialMediaWordFrequencyMapper.selectList();
-
-
         return generalSocialMediaWordFrequencyMapper.selectRecordsOfLatestDate();
     }
 

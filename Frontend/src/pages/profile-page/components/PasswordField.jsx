@@ -1,4 +1,10 @@
-import React, { useState, useEffect } from "react";
+/**
+ * This component is a password field that allows users to change their password.
+ * It displays fields for the old password, new password, and password confirmation.
+ * It provides validation for the new password and handles the save and cancel actions.
+ * It is used on the Profile page.
+ */
+import React, { useEffect, useState } from "react";
 
 export default function PasswordField({
   editable,
@@ -88,17 +94,17 @@ export default function PasswordField({
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <label className="text-gray-700 font-medium">Password</label>
+        <label className="text-gray-700 font-medium dark:text-white">Password</label>
         <div className="flex items-center gap-2">
           <button
-            className="font-bold text-sm text-[#152063] cursor-pointer"
+            className="font-semibold text-sm text-[#152063] cursor-pointer dark:text-cyan-300"
             onClick={editable ? handleCancelClick : onReset}
           >
             {editable ? "Cancel" : "Reset"}
           </button>
           {editable && (
             <button
-              className="font-bold text-sm text-[#152063] cursor-pointer"
+              className="font-bold text-sm text-[#152063] cursor-pointer dark:text-cyan-300"
               onClick={handleSavePassword}
             >
               Save
@@ -108,7 +114,7 @@ export default function PasswordField({
       </div>
 
       {editable ? (
-        <div className="mt-2">
+        <div>
           {/* Old Password */}
           <div className="mb-3 relative">
             <input
@@ -116,9 +122,8 @@ export default function PasswordField({
               value={tempPassword.oldPassword}
               onChange={(e) => handlePasswordChange("oldPassword", e.target.value)}
               placeholder="Enter your old password"
-              className={`w-full p-2 border rounded ${
-                validationError.oldPassword ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full p-2 border rounded dark:text-black  ${validationError.oldPassword ? "border-red-500" : "border-gray-300"
+                }`}
             />
             <button
               type="button"
@@ -141,9 +146,8 @@ export default function PasswordField({
               value={tempPassword.newPassword}
               onChange={(e) => handlePasswordChange("newPassword", e.target.value)}
               placeholder="Enter your new password"
-              className={`w-full p-2 border rounded ${
-                validationError.newPassword ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full p-2 border rounded dark:text-black ${validationError.newPassword ? "border-red-500" : "border-gray-300"
+                }`}
             />
             <button
               type="button"
@@ -160,7 +164,7 @@ export default function PasswordField({
           </div>
 
           {/* Confirm Password */}
-          <div className="mb-3 relative">
+          <div className="relative">
             <input
               type={showPassword.confirmPassword ? "text" : "password"}
               value={tempPassword.confirmPassword}
@@ -168,9 +172,8 @@ export default function PasswordField({
                 handlePasswordChange("confirmPassword", e.target.value)
               }
               placeholder="Repeat your new password"
-              className={`w-full p-2 border rounded ${
-                validationError.confirmPassword ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full p-2 border rounded dark:text-black  ${validationError.confirmPassword ? "border-red-500" : "border-gray-300"
+                }`}
             />
             <button
               type="button"
@@ -185,6 +188,12 @@ export default function PasswordField({
               </p>
             )}
           </div>
+          <a
+            className="font-bold text-sm text-[#152063] cursor-pointer dark:text-cyan-300"
+            href="/forgot-password"
+          >
+            Forgot Your Password?
+          </a>
         </div>
       ) : (
         <input

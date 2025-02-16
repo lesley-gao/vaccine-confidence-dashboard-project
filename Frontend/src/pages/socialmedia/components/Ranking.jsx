@@ -1,3 +1,7 @@
+/**
+ * This component displays the top-ranked words from social media sentiment analysis, filtered by sentiment type and platform.
+ * It is used on the SocialMedia page.
+ */
 import React, { useState } from "react";
 
 export default function Ranking({ wordData, currentIndex, platforms, setCurrentIndex }) {
@@ -18,26 +22,30 @@ export default function Ranking({ wordData, currentIndex, platforms, setCurrentI
   return (
     <div className="h-full pl-2 pr-2 component-card">
       <div className="flex flex-col w-full items-center relative">
-        <p className="w-[90%] mt-6 mb-2 text-xl font-bold gap-2 text-center text-black">
-          Top Words by Weight on {platforms[currentIndex]?.name || "Unknown Platform"}
+        <p className="w-[90%] mt-6 mb-2 text-2xl font-bold gap-2 text-center text-black dark:text-white">
+          Hot Words on {platforms[currentIndex]?.name || "Unknown Platform"}
         </p>
 
-        <div className="flex justify-center gap-2 mb-4">
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          * Maximum frequency normalization is used here. *
+        </p>
+
+        <div className="flex justify-center gap-2 my-4">
           <button
             onClick={() => setFilter("positive")}
-            className={`px-3 py-1 rounded text-sm ${filter === "positive" ? "bg-green-500 text-white" : "bg-gray-200"}`}
+            className={`px-3 py-1 rounded text-sm dark:text-black ${filter === "positive" ? "bg-[#81B214] text-white" : "bg-gray-200"}`}
           >
             Positive
           </button>
           <button
             onClick={() => setFilter("neutral")}
-            className={`px-3 py-1 rounded text-sm ${filter === "neutral" ? "bg-yellow-500 text-white" : "bg-gray-200"}`}
+            className={`px-3 py-1 rounded text-sm dark:text-black ${filter === "neutral" ? "bg-[#efad03] text-white" : "bg-gray-200"}`}
           >
             Neutral
           </button>
           <button
             onClick={() => setFilter("negative")}
-            className={`px-3 py-1 rounded text-sm ${filter === "negative" ? "bg-red-500 text-white" : "bg-gray-200"}`}
+            className={`px-3 py-1 rounded text-sm dark:text-black ${filter === "negative" ? "bg-[#D0004B] text-white" : "bg-gray-200"}`}
           >
             Negative
           </button>
@@ -47,11 +55,11 @@ export default function Ranking({ wordData, currentIndex, platforms, setCurrentI
           {currentPlatformWords.slice(0, 15).map((word, index) => (
             <div
               key={index}
-              className="flex justify-between py-1 px-4 border-b border-gray-300 text-black"
+              className="flex justify-between py-1 px-4 border-b border-gray-300 text-black dark:text-cyan-300"
             >
-              <span className="font-bold">Top {index + 1}</span>
-              <span>{word.text}</span>
-              <span className="text-gray-600">{(word.value / 1000).toFixed(3)}</span>
+              <span className="font-bold ">Top {index + 1}</span>
+              <span className="dark:text-white">{word.text}</span>
+              <span className="text-gray-600 dark:text-white/60">{(word.value / 1000).toFixed(3)}</span>
             </div>
           ))}
         </div>

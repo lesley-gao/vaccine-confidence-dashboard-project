@@ -7,5 +7,4 @@ import org.uoa.vaccinesafetyconfidence.pojo.entity.ComponentDataSource;
 @Repository
 public interface ComponentDataSourceMapper extends BaseMapper<ComponentDataSource> {
 
-
 }

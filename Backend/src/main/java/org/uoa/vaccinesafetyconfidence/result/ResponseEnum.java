@@ -23,44 +23,28 @@ public enum ResponseEnum {
     WRONG_VACCINE_ID_ERROR(3006, "The vaccine ID is not correct."),
 
 
-
-    // Front Service Error
-    NO_COMPONENT_ERROR(5001, "Such component does not exist."),
-
-    LOGIN_AUTH_ERROR(2001, "User not login."),
-    ENTITY_NOT_FOUND_ERROR(2002, "Entity not found."),
-    ILLEGAL_NAME_ERROR(2003, "Illegal naming pattern."),
-    WRONG_YEAR_PATTEN_ERROR(2004, "Please enter the correct format of year!"),
-    PAGE_NUMBER_ERROR(2005, "Current page number must greater than 1."),
-    USER_NO_ACCESS_ERROR(2006, "User has no access to resource."),
-    USER_NOT_SUPERUSER_ERROR(2007, "Current user is not administrator."),
-    DUPLICATE_NAME_ERROR(2008, "This name has already been used."),
-    LACK_NAME_ERROR(2009, "Name field cannot be empty."),
-    NO_MOVIE_ID_ERROR(2010, "Movie ID is required."),
-    DUPLICATE_TITLE_ERROR(2011, "This title has already been used."),
-    NO_RELATIVE_MOVIE_ERROR(2012, "A review must relate to an existing movie in the system."),
-    NO_TITLE_ERROR(2013, "A review must have a title."),
-    NO_CONTENT_ERROR(2014, "A review must have its content."),
-    STAR_UPDATE_FAIL_ERROR(2015, "Can not unStar this item."),
-    ITEM_STARED_ERROR(2016, "This item have already been stared."),
-    ITEM_LIKED_ERROR(2017, "This item have already been liked."),
-    LIKE_UPDATE_FAIL_ERROR(2018, "Can not unLike this item."),
-    EMPTY_VALUE_ERROR(2019, "Each field should not be empty."),
-
     // Account Error
     ACCOUNT_NOTEXIST_ERROR(4001, "User does not exit."),
     LOGIN_PASSWORD_ERROR(4002, "The password is wrong."),
     USER_EXIST_ERROR(4003, "This username already has already been used. "),
     USERNAME_NULL_ERROR(4004, "Username can not be empty."),
     PASSWORD_NULL_ERROR(4005, "Password can not be empty."),
-
-    EMAIL_NULL_ERROR(4008, "Email address can not be empty."),
-
-    EMAIL_EXIST_ERROR(4009, "This email address has been occupied already."),
-
-
     TOKEN_NULL_ERROR(4006, "No token, please log in again."),
-    TOKEN_NOTUSEFUL_ERROR(4007,"Invalid token, please log in again."),
+    TOKEN_INVALID_ERROR(4007,"Invalid token, please log in again."),
+    EMAIL_NULL_ERROR(4008, "Email address can not be empty."),
+    EMAIL_EXIST_ERROR(4009, "This email address has been occupied already."),
+    GOOGLE_TOKEN_NULL_ERROR(4010, "Google ID Token is empty or does not exist!"),
+    GOOGLE_TOKEN_FORMAT_ERROR(4011, "ID Token format is not a valid JWT!"),
+    GOOGLE_TOKEN_INVALID_ERROR(4012, "ID Token is invalid or expired!"),
+    GOOGLE_TOKEN_VERIFICATION_EXCEPTION(4013, "Exception occurs during ID Token verification. "),
+    ACCOUNT_VERIFIED_ERROR(4014, "This account has already been verified!"),
+    WRONG_VERIFICATION_CODE_ERROR(4015, "The verification code is wrong!"),
+    ACCOUNT_VERIFICATION_ERROR(4016, "This account did not be verified!"),
+    LOGIN_AUTH_ERROR(4017, "User not login."),
+
+
+    // Front Service Error
+    NO_COMPONENT_ERROR(5001, "Such component does not exist."),
 
     ;
 

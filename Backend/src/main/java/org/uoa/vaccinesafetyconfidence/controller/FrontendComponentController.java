@@ -16,9 +16,9 @@ import org.uoa.vaccinesafetyconfidence.service.FrontendComponentService;
 @Validated
 @Tag(name = "FrontendComponentController", description = "前端组件相关接口")
 public class FrontendComponentController {
-
     @Autowired
     private FrontendComponentService frontendComponentService;
+
 
     @Operation(summary = "根据ID获取某个前端组件的信息")
     @GetMapping("/get/id")

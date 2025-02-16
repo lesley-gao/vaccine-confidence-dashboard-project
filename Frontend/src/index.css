@@ -8,11 +8,11 @@
   }
 
   .input-field {
-    @apply w-full p-5 font-medium border-0 border-b-2 border-b-slate-300 hover:border-b-2 focus:outline-none hover:border-b-slate-500 transition-colors duration-200 placeholder:opacity-60;
+    @apply w-full px-5 py-3 font-medium border-0 border-b-2 border-b-slate-300 hover:border-b-2 focus:outline-none hover:border-b-slate-500 transition-colors duration-200 placeholder:opacity-60 dark:text-black;
   }
 
   .component-card {
-    @apply w-full p-6 bg-white rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl ;
+    @apply w-full p-2 bg-white/60 rounded-xl border-2 border-slate-200 transition-all duration-300 shadow-lg hover:shadow-xl dark:bg-slate-600/60 dark:border dark:border-slate-800 ;
   }
 }
 
@@ -114,27 +114,27 @@
 
 @font-face {
   font-family: 'BaiJamjuree-Bold';
-  src: url('assets/Font/BaiJamjuree-Bold.ttf');
+  src: url('/font/BaiJamjuree-Bold.ttf');
 }
 
 @font-face {
   font-family: 'BaiJamjuree-Light';
-  src: url('assets/Font/BaiJamjuree-Light.ttf');
+  src: url('/font/BaiJamjuree-Light.ttf');
 }
 
 @font-face {
   font-family: 'BaiJamjuree-Light';
-  src: url('assets/Font/BaiJamjuree-Light.ttf');
+  src: url('/font/BaiJamjuree-Light.ttf');
 }
 
 @font-face {
   font-family: 'Poppins-Bold';
-  src: url('assets/Font/Poppins-Bold.ttf');
+  src: url('/font/Poppins-Bold.ttf');
 }
 
 @font-face {
   font-family: 'Poppins-Regular';
-  src: url('assets/Font/Poppins-Regular.ttf');
+  src: url('/font/Poppins-Regular.ttf');
 }
 
  /* Hide scrollbar for Chrome, Safari and Opera */
@@ -147,7 +147,6 @@
   -ms-overflow-style: none !important;  /* IE and Edge */
   scrollbar-width: none !important;  /* Firefox */
 }
-
 
 
 /* Style for vaccine development timeline */
@@ -164,19 +163,19 @@
 }
 
 .vertical-timeline-element {
-  margin: 0 0 1em 0 !important;
+  margin: 0 0 0.5em 0 !important;
 }
 
 .vertical-timeline-element-content {
   margin-top: 0 !important;
-  margin-bottom: 1em !important;
+  margin-bottom: 0.5em !important;
   padding: 1em !important;
 }
 
 .vertical-timeline-element-date {
   font-weight: bold !important;
   color: #152063 !important;
-  font-size:larger !important;
+  font-size: medium !important;
 }
 
 @media only screen and (max-width: 1169px) {
@@ -185,36 +184,6 @@
     float: none !important;
     margin-top: 0.5em !important;
   }
-}
-
-/* Style for bounce animation on 404 Page*/
-@keyframes bounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-45px);
-  }
-}
-
-.bounce {
-  animation: bounce 1s infinite ease-in-out;
-  animation-iteration-count: 3;
-}
-
-.bounce-1 {
-  animation-delay: 0s;
-}
-
-.bounce-2 {
-  animation-delay: 0.2s;
-}
-
-.bounce-3 {
-  animation-delay: 0.4s;
 }
 
 @keyframes slideIn {

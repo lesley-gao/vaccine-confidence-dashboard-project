@@ -1,40 +1,96 @@
-// This is the compoment that displays the timeline of past disease outbreaks in New Zealand.
-// The component will be used in DashboardPage.
-import React from 'react';
-import { diseaseOutbreaks } from "@/data/outbreaks";
+/**
+ * This component displays the outbreak data for diseases associated with a selected vaccine in New Zealand.
+ * It fetches and visualizes the data as a list of disease outbreaks, allowing users to track the history of outbreaks.
+ * It is displayed on the Dashboard page.
+ */
+import React, { useState, useEffect } from 'react';
 import DataSource from './DataSource';
+import { fetchData } from '@/utils/api.js'
+import PlaceHolder from "./PlaceHolder";
 
 export default function OutbreaksTimeline({ selectedVaccine }) {
-    const dataSource = {
-        websiteName: "ESR",
-        URL: "https://www.esr.cri.nz/expertise/public-health/infectious-disease-intelligence-surveillance/",
-    };
 
-    const filteredOutbreaks = selectedVaccine?.vaccineId
-        ? diseaseOutbreaks
-            .filter(outbreak => outbreak.disea_id_pk === selectedVaccine.vaccineId)
-            .sort((a, b) => b.dot_year - a.dot_year)
-        : [];
+    const [loading, setLoading] = useState(false);
+    const [outbreakTimeline, setOutbreakTimeline] = useState([]);
+
+    // Fetch outbreak timeline, first get all diseases related to the selected vaccine,
+    // then fetch outbreak timeline for each disease,
+    // then merge all outbreak timelines and sort by year
+    useEffect(() => {
+        const getOutbreaksTimeline = async () => {
+            try {
+                setLoading(true);
+
+                const diseaseData = await fetchData(
+                    `/disease/all?vaccineId=${selectedVaccine.vaccineId}`
+                );
+
+                if (!diseaseData || diseaseData.length === 0) {
+                    setOutbreakTimeline([]);
+                    return;
+                }
+
+                const timelinePromises = diseaseData.map(async (diseaseItem) => {
+                    const diseaseId = diseaseItem.disease.diseaIdPk;
+                    try {
+                        const outbreaksForOneDisease = await fetchData(`/disease/outbreak-timeline?diseaseId=${diseaseId}`);
+                        return outbreaksForOneDisease;
+                    } catch (e) {
+                        return [];
+                    }
+                });
+
+                const results = await Promise.all(timelinePromises);
+
+                const merged = results.flat().sort((a, b) => b.dotYear - a.dotYear);
+                setOutbreakTimeline(merged);
+            } catch (error) {
+                console.error("Error fetching outbreak timeline:", error);
+                setOutbreakTimeline([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (selectedVaccine?.vaccineId) {
+            getOutbreaksTimeline();
+        } else {
+            setOutbreakTimeline([]);
+        }
+    }, [selectedVaccine]);
+
+
+    if (loading) {
+        return (
+            <div className="h-full flex items-center justify-center">
+                <div className="text-gray-500">Loading disease outbreaks...</div>
+            </div>
+        );
+    }
+
+    if (!selectedVaccine || selectedVaccine.vaccineId == null) {
+        return (
+            <div className="h-full flex items-center justify-center">
+                <div className="text-gray-500 dark:text-white">Please select a vaccine to view its related outbreak history.</div>
+            </div>
+        );
+    }
 
     return (
         <div className="h-full flex flex-col">
             <div className="flex flex-row">
-                <h1 className="p-4 text-xl font-bold font-PoppinsBold">Past Outbreaks</h1>
-                <DataSource dataSource={dataSource} />
+                <h1 className="p-4 text-xl font-bold font-PoppinsBold dark:text-cyan-300">Past Outbreaks</h1>
+                {outbreakTimeline && outbreakTimeline.length > 0 && <DataSource selectedVaccine={selectedVaccine} componentId="dis_outbreaks" />}
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 pt-0 scrollbar-hide">
-                {!selectedVaccine?.vaccineId ? (
-                    <div className="text-center text-gray-500">
-                        Please select a vaccine to view its outbreak history.
-                    </div>
-                ) : filteredOutbreaks.length === 0 ? (
-                    <div className="text-center text-gray-500">
-                        No outbreak records available for this vaccine.
+            <div className="flex-1 overflow-y-auto p-4 pt-0 scrollbar-hide ">
+                {outbreakTimeline.length === 0 ? (
+                    <div className="h-full flex items-center justify-center">
+                        <PlaceHolder />
                     </div>
                 ) : (
-                    filteredOutbreaks.map((outbreak) => (
-                        <div className="flex gap-3 mb-3" key={outbreak.dot_id_pk}>
+                    outbreakTimeline.map((outbreak) => (
+                        <div className="flex gap-3 mb-3 " key={`${outbreak.diseaIdPk}+${outbreak.dotIdPk}`}>
                             <div className="w-8 aspect-square flex-shrink-0">
                                 <img
                                     src="/image/virus.jpg"
@@ -43,8 +99,8 @@ export default function OutbreaksTimeline({ selectedVaccine }) {
                                 />
                             </div>
                             <div>
-                                <h6 className="text-lg font-bold">{outbreak.dot_year}</h6>
-                                <p className="text-slate-700">{outbreak.dot_description}</p>
+                                <h6 className="text-lg font-bold dark:text-cyan-300 ">{outbreak.dotYear}</h6>
+                                <p className="text-slate-700 dark:text-white">{outbreak.dotDescription}</p>
                             </div>
                         </div>
                     ))

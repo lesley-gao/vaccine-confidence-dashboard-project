@@ -1,6 +1,10 @@
+/**
+ * This file defines utility functions for making API requests using Axios,
+ * including GET, POST, PUT, PATCH, and DELETE operations with error handling.
+ */
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://8.138.179.126:8050";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const api = axios.create({
     baseURL: API_BASE_URL,

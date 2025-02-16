@@ -1,3 +1,5 @@
+// This file defines validation rules for user authentication fields, 
+// including username, email, password, confirm password, and verification code.
 export const username_validation = {
     name: 'username',
     label: 'Username',
@@ -77,8 +79,29 @@ export const confirm_password_validation = {
         },
         validate: (value, formValues) => {
             return value === formValues.password || 'Passwords do not match'
-        }
+        },
+        hint: 'Please enter your password again'   
     }
 }
 
-
+export const verification_code_validation = {
+    name: 'verificationCode',
+    label: 'Verification Code',
+    type: 'text',
+    id: 'verificationCode',
+    placeholder: 'Enter verification code',
+    validation: {
+        required: {
+            value: true,
+            message: 'Verification code is required',
+        },
+        minLength: {
+            value: 6,
+            message: 'Verification code should be 6 characters',
+        },
+        maxLength: {
+            value: 6,
+            message: 'Verification code should be 6 characters',
+        },
+    },
+}

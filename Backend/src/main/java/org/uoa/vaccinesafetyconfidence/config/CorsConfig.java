@@ -7,7 +7,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /***
- * 跨域设置，暂时关闭（需要时取消注释以启用）
+ * 跨域设置，被注释时关闭（需要时取消注释以启用）
  */
 
 @Configuration

@@ -1,22 +1,19 @@
-// This is the compoment that displays the milestones of the MMR vaccine. 
-//It uses the react-vertical-timeline-component library to display the milestones in a vertical timeline. 
-//The component will be used in DashboardPage.
+/**
+ * This component displays the milestones of the selected vaccine in New Zealand.
+ * It uses the react-vertical-timeline-component library to display the milestones in a vertical timeline.
+ * The component is displayed on the dashboard page.
+ */
 import React, { useState, useEffect } from 'react';
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 import { fetchData } from '@/utils/api.js'
 import DataSource from './DataSource';
-import { useVaccine } from '@/hooks/useVaccine';
+import PlaceHolder from "./PlaceHolder";
 
 export default function VaxMilestone({ selectedVaccine }) {
 
     const [milestones, setMilestones] = useState([]);
     const [loading, setLoading] = useState(false);
-
-    const dataSource = {
-        websiteName: "ESR",
-        URL: "https://www.esr.cri.nz/expertise/public-health/infectious-disease-intelligence-surveillance/",
-    };
 
     useEffect(() => {
         const getMilestones = async () => {
@@ -24,8 +21,8 @@ export default function VaxMilestone({ selectedVaccine }) {
 
             setLoading(true);
             try {
-                const data = await fetchData(`/vaccine/vacDevMilestone/vacId?vaccineId=${selectedVaccine.vaccineId}`);
-                console.log('Fetched vaccine timeline:', data);
+                const data = await fetchData(`/vaccine/development-milestone/vac-id?vaccineId=${selectedVaccine.vaccineId}`);
+
                 if (data && Array.isArray(data)) {
                     setMilestones(data);
                 }
@@ -51,15 +48,15 @@ export default function VaxMilestone({ selectedVaccine }) {
     return (
         <div className="h-full flex flex-col">
             <div className="flex flex-row">
-                <h1 className="p-4 text-xl font-bold font-PoppinsBold">Vaccine Milestones</h1>
-                <DataSource dataSource={dataSource} />
+                <h1 className="p-4 text-xl font-bold font-PoppinsBold dark:text-cyan-300">Vaccine Milestones</h1>
+                {milestones && milestones.length > 0 && <DataSource selectedVaccine={selectedVaccine} componentId="vax_milestones" />}
             </div>
 
             <div className="flex-1 overflow-y-auto min-h-0 scrollbar-hide">
                 <div className="relative px-4">
                     {milestones.length === 0 ? (
                         <div className="flex items-center justify-center h-full">
-                            <p className="text-slate-700">No milestone data available for this vaccine.</p>
+                            <PlaceHolder />
                         </div>
                     ) : milestones.length === 1 ? (
                         <p>
@@ -75,9 +72,9 @@ export default function VaxMilestone({ selectedVaccine }) {
                                     iconStyle={{
                                         background: 'linear-gradient(180deg, #3E62AD, #789DBC)',
                                         color: '#fff',
-                                        width: '24px',
-                                        height: '24px',
-                                        margin: '4px 0 0 -12px',
+                                        width: '20px',
+                                        height: '20px',
+                                        margin: '14px 0 0 -12px',
                                     }}
                                     contentStyle={{
                                         background: '#f9f9f9',
@@ -102,7 +99,6 @@ export default function VaxMilestone({ selectedVaccine }) {
                                 </VerticalTimelineElement>
                             ))}
                         </VerticalTimeline>
-
                     )}
                 </div>
             </div>
