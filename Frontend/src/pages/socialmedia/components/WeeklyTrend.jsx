@@ -127,8 +127,8 @@ const WeeklyTrend = ({ sentimentData }) => {
               },
               legend: {
                 orientation: "h",
-                x: 0.5,
-                y: -0.15,
+                x: 0.55,
+                y: -0.3,
                 xanchor: "center",
                 yanchor: "top",
                 font: { color: isDark ? '#ffffff' : '#000000' }

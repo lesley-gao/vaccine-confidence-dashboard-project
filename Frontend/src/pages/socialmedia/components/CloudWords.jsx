@@ -72,7 +72,7 @@ export default function CloudWords({ wordData, platform}) {
         <GroupNote attitude={"negative"} />
       </div>
 
-      <div className="w-full h-auto overflow-hidden items-center mt-6">
+      <div className="w-full h-auto overflow-hidden items-center mt-2">
         <WordCloud
           data={wordData.filter(
             (word) => (word.platform === platform?.name) && (word.time === platform?.time)
@@ -82,8 +82,8 @@ export default function CloudWords({ wordData, platform}) {
           font="PoppinsRegular"
           fill={(word) => colorMapper(word.attitude)}
           padding={2}
-          width={500}
-          height={400}
+          width={450}
+          height={350}
           onWordMouseOver={handleMouseOver}
           onWordMouseOut={handleMouseOut}
         />
