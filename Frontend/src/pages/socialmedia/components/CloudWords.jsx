@@ -7,11 +7,11 @@ import WordCloud from "react-d3-cloud";
 import GroupNote from "./GroupNote";
 import SentimentBar from "./SentimentBar";
 
-export default function CloudWords({ wordData, platforms, currentIndex }) {
+export default function CloudWords({ wordData, platform}) {
   const tooltipRef = useRef(null);
 
   const fontSizeMapper = (word) =>
-    Math.max(20, Math.min(Math.log2(word.value) * 150, 40));;
+    Math.max(20, Math.min(Math.log2(word.value) * 80, 30));
 
   const colorMapper = (attitude) => {
     if (attitude === "positive") return "#81B214"; // Green
@@ -52,7 +52,7 @@ export default function CloudWords({ wordData, platforms, currentIndex }) {
     <div className="flex flex-col items-center h-full component-card">
       <div className="w-[90%] mt-8 flex flex-col gap-4 text-center text-black">
         <p className="text-2xl font-bold dark:text-white">
-        Frequent Discussion Topics Among Different Attitude Groups on {platforms[currentIndex]?.name || "Social Media"}
+        Frequent Discussion Topics Among Different Attitude Groups on {platform?.name || "Social Media"}
         </p>
         
         <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -62,8 +62,8 @@ export default function CloudWords({ wordData, platforms, currentIndex }) {
 
       <div className="w-full p-4">
         <SentimentBar
-          sentiments={platforms[currentIndex]?.sentiments || []}
-          totalScore={platforms[currentIndex]?.totalScore || 0}
+          sentiments={platform?.sentiments || []}
+          totalScore={platform?.totalScore || 0}
         />
       </div>
       <div className="flex flex-row gap-2 items-center px-5">
@@ -75,15 +75,15 @@ export default function CloudWords({ wordData, platforms, currentIndex }) {
       <div className="w-full h-auto overflow-hidden items-center mt-6">
         <WordCloud
           data={wordData.filter(
-            (word) => word.platform === platforms[currentIndex]?.name
+            (word) => (word.platform === platform?.name) && (word.time === platform?.time)
           )}
           fontSizeMapper={fontSizeMapper}
           rotate={() => 0}
           font="PoppinsRegular"
           fill={(word) => colorMapper(word.attitude)}
           padding={2}
-          width={300}
-          height={200}
+          width={500}
+          height={400}
           onWordMouseOver={handleMouseOver}
           onWordMouseOut={handleMouseOut}
         />

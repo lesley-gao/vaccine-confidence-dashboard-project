@@ -9,12 +9,12 @@ import java.util.List;
 
 @Repository
 public interface GeneralSocialMediaWordFrequencyMapper extends BaseMapper<GeneralSocialMediaWordFrequency> {
-    @Select("""
-        SELECT * 
-        FROM `GENERAL_SOCIAL_MEDIA_WORD_FREQUENCY_T` 
-        WHERE DATE(`gsmwf_time_created`) = 
-        (SELECT DATE(MAX(`gsmwf_time_created`)) FROM `GENERAL_SOCIAL_MEDIA_WORD_FREQUENCY_T`)
-    """)
-    List<GeneralSocialMediaWordFrequency> selectRecordsOfLatestDate();
+//    @Select("""
+//        SELECT *
+//        FROM `GENERAL_SOCIAL_MEDIA_WORD_FREQUENCY_T`
+//        WHERE DATE(`gsmwf_time_created`) =
+//        (SELECT DATE(MAX(`gsmwf_time_created`)) FROM `GENERAL_SOCIAL_MEDIA_WORD_FREQUENCY_T`)
+//    """)
+//    List<GeneralSocialMediaWordFrequency> selectRecordsOfLatestDate();
 
 }

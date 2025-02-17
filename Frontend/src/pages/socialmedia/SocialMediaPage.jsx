@@ -42,6 +42,8 @@ export default function SocialMediaPage() {
         setWordData(transformWordData(wordResponse));
         setSentimentData(sentimentResponse);
 
+        console.log("原始 wordResponse 数据:", wordResponse);
+
         // Process sentiment data
         const transformSentimentData = (list) =>
           list.map((item) => {
@@ -72,20 +74,23 @@ export default function SocialMediaPage() {
             };
           });
 
-        const allPlatforms = transformSentimentData(sentimentResponse);
+        // Extract all platform names (de-duplicate)
+        const uniquePlatforms = [...new Set(sentimentResponse.map(item => item.gsmssPlatform))];
+        setPlatforms(uniquePlatforms);
 
-        const latestTime = Math.max(
-          ...allPlatforms.map((platform) => new Date(platform.time).getTime())
-        );
+        // Filter data for the latest date for each platform
+        const latestDataByPlatform = {};
+        sentimentResponse.forEach((item) => {
+          const platform = item.gsmssPlatform;
+          const time = new Date(item.gsmssTimeCreated).getTime();
 
-        // Filter platforms to include only the latest time
-        const latestPlatforms = allPlatforms.filter(
-          (platform) =>
-            new Date(platform.time).getTime() === latestTime
-        );
+          if (!latestDataByPlatform[platform] || time > new Date(latestDataByPlatform[platform].time).getTime()) {
+            latestDataByPlatform[platform] = transformSentimentData([item])[0];
+          }
+        });
 
-        setPlatforms(allPlatforms);
-        setFilteredPlatforms(latestPlatforms);
+        setFilteredPlatforms(Object.values(latestDataByPlatform));
+
       } catch (error) {
         console.error("Error loading API data:", error);
         setWordData([]);
@@ -108,8 +113,9 @@ export default function SocialMediaPage() {
     );
   }
 
-  const latestUpdateTime = wordData[0]?.time || "Unknown";
-
+  const selectedPlatformData = filteredPlatforms[currentIndex] || {};
+  const latestUpdateTime = selectedPlatformData?.time || "Unknown";
+  
   return (
     <div className="h-full">
       <div className='relative'>
@@ -128,7 +134,7 @@ export default function SocialMediaPage() {
         <PlatformSelectButton
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
-          platforms={filteredPlatforms}
+          platforms={platforms}
         />
         <div className="flex items-center gap-4">
           <span className="font-bold text-gray-700 dark:text-white">Last updated:</span>
@@ -142,18 +148,14 @@ export default function SocialMediaPage() {
         <div className="w-full">
           <CloudWord
             wordData={wordData}
-            platforms={filteredPlatforms}
-            currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
+            platform={selectedPlatformData}
           />
         </div>
 
         <div className="w-full flex flex-col gap-4">
           <Ranking
             wordData={wordData}
-            platforms={filteredPlatforms}
-            currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
+            platform={selectedPlatformData}
           />
           <WeeklyTrend
             platforms={platforms}

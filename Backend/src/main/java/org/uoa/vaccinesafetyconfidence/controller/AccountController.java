@@ -50,14 +50,14 @@ public class AccountController {
     }
 
     @Operation(summary = "通过token获取账户资料", security = {@SecurityRequirement(name = "token")})
-    @GetMapping("/get/profile")
+    @GetMapping("/profile/get")
     @UserLoginToken
     public R getUserProfile(@RequestHeader("token") String token){
         return R.ok().data(accountService.getUserProfile(token));
     }
 
     @Operation(summary = "通过token修改账户资料", security = {@SecurityRequirement(name = "token")})
-    @PostMapping("/update/profile")
+    @PostMapping("/profile/update")
     @UserLoginToken
     public R updateUserProfile(@RequestBody UserProfileVO userProfileVO, @RequestHeader("token") String token){
         accountService.updateUserProfile(userProfileVO, token);
@@ -65,7 +65,7 @@ public class AccountController {
     }
 
     @Operation(summary = "通过token修改账户密码", security = {@SecurityRequirement(name = "token")})
-    @PatchMapping("/update/password")
+    @PatchMapping("/password/update")
     @UserLoginToken
     public R updateUserPassword(@RequestParam String oldPwd, @RequestParam String newPwd, @RequestHeader("token") String token){
         accountService.updateUserPassword(oldPwd, newPwd, token);

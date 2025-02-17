@@ -7,7 +7,6 @@ import org.uoa.vaccinesafetyconfidence.pojo.entity.DiseaseR0;
 import java.util.List;
 
 public interface DiseaseService {
-
     List<DiseaseInfosDTO> getDisease(Integer vaccineId);
 
     List<DiseaOutbreakTimeline> getDiseaOutbreakTimelineByDiseaId(Integer diseaId);

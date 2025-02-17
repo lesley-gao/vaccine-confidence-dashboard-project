@@ -89,8 +89,8 @@ public class LoginInterceptor implements HandlerInterceptor{
                     response.setCharacterEncoding("UTF-8");
                     response.setContentType("application/json; charset=utf-8");
                     JSONObject res = new JSONObject();
-                    res.put("code",ResponseEnum.ACCOUNT_NOTEXIST_ERROR.getCode());
-                    res.put("message",ResponseEnum.ACCOUNT_NOTEXIST_ERROR.getMessage());
+                    res.put("code",ResponseEnum.NO_ACCOUNT_ERROR.getCode());
+                    res.put("message",ResponseEnum.NO_ACCOUNT_ERROR.getMessage());
                     PrintWriter out = null ;
                     out = response.getWriter();
                     out.write(res.toString());
@@ -105,8 +105,8 @@ public class LoginInterceptor implements HandlerInterceptor{
                     response.setCharacterEncoding("UTF-8");
                     response.setContentType("application/json; charset=utf-8");
                     JSONObject res = new JSONObject();
-                    res.put("code",ResponseEnum.ACCOUNT_NOTEXIST_ERROR.getCode());
-                    res.put("message",ResponseEnum.ACCOUNT_NOTEXIST_ERROR.getMessage());
+                    res.put("code",ResponseEnum.NO_ACCOUNT_ERROR.getCode());
+                    res.put("message",ResponseEnum.NO_ACCOUNT_ERROR.getMessage());
                     PrintWriter out = null ;
                     out = response.getWriter();
                     out.write(res.toString());

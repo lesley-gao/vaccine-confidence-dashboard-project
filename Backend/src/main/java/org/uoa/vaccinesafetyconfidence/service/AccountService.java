@@ -8,7 +8,6 @@ import org.uoa.vaccinesafetyconfidence.pojo.vo.RegisterVO;
 import org.uoa.vaccinesafetyconfidence.pojo.vo.UserProfileVO;
 
 public interface AccountService {
-
     String register(RegisterVO registerVO);
 
     AccountInfoVO login(LoginVO loginVO);

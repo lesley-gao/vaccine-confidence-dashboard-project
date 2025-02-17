@@ -1,17 +1,9 @@
-/**
- * This component allows users to select a social media platform for sentiment analysis and word ranking display.
- * It is used on the SocialMedia page.
- */
 import React from "react";
 
 function PlatformSelectButton({ currentIndex, setCurrentIndex, platforms }) {
-    const uniquePlatforms = Array.from(
-        new Set(platforms.map((platform) => platform.name))
-    ).map((name) => ({ name }));
-
     const handleSelectChange = (event) => {
-        const selectedIndex = uniquePlatforms.findIndex(
-            (platform) => platform.name === event.target.value
+        const selectedIndex = platforms.findIndex(
+            (platform) => platform === event.target.value
         );
         setCurrentIndex(selectedIndex);
     };
@@ -23,13 +15,13 @@ function PlatformSelectButton({ currentIndex, setCurrentIndex, platforms }) {
             </label>
             <select
                 id="platform-select"
-                value={uniquePlatforms[currentIndex]?.name || ""}
+                value={platforms[currentIndex] || ""}
                 onChange={handleSelectChange}
                 className="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-[200px] dark:text-gray-700"
             >
-                {uniquePlatforms.map((platform, index) => (
-                    <option key={platform.name} value={platform.name}>
-                        {platform.name}
+                {platforms.map((platform, index) => (
+                    <option key={index} value={platform}>
+                        {platform}
                     </option>
                 ))}
             </select>

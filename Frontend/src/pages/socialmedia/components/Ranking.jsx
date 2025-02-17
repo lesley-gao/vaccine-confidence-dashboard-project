@@ -4,26 +4,18 @@
  */
 import React, { useState } from "react";
 
-export default function Ranking({ wordData, currentIndex, platforms, setCurrentIndex }) {
+export default function Ranking({ wordData, platform }) {
   const [filter, setFilter] = useState("positive");
 
   const currentPlatformWords = (wordData || [])
-    .filter((word) => word.platform === platforms[currentIndex]?.name && word.attitude === filter)
+    .filter((word) => word.platform === platform?.name && word.attitude === filter && word.time === platform?.time)
     .sort((a, b) => b.value - a.value);
-
-  if (!wordData.length || !platforms.length) {
-    return (
-      <div className="h-full flex items-center justify-centercomponent-card">
-        <div className="text-gray-500">Loading data...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="h-full pl-2 pr-2 component-card">
       <div className="flex flex-col w-full items-center relative">
         <p className="w-[90%] mt-6 mb-2 text-2xl font-bold gap-2 text-center text-black dark:text-white">
-          Hot Words on {platforms[currentIndex]?.name || "Unknown Platform"}
+          Hot Words on {platform?.name || "Unknown Platform"}
         </p>
 
         <p className="text-sm text-gray-600 dark:text-gray-300">

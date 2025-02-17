@@ -178,7 +178,7 @@ public class VaccineServiceImpl implements VaccineService {
 
     @Override
     public List<GeneralSocialMediaWordFrequency> getGeneralSocialMediaWordFrequency() {
-        return generalSocialMediaWordFrequencyMapper.selectRecordsOfLatestDate();
+        return generalSocialMediaWordFrequencyMapper.selectList(null);
     }
 
 

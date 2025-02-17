@@ -12,6 +12,7 @@ public enum ResponseEnum {
     ERROR(-1, "ERROR"),
 
     //-1xx 服务器错误
+    DEBEZIUM_TOMBSTONE_MESSAGE(1010, "Received tombstone message."),
 
 
     // Custom Error
@@ -24,19 +25,19 @@ public enum ResponseEnum {
 
 
     // Account Error
-    ACCOUNT_NOTEXIST_ERROR(4001, "User does not exit."),
+    NO_ACCOUNT_ERROR(4001, "User does not exist."),
     LOGIN_PASSWORD_ERROR(4002, "The password is wrong."),
-    USER_EXIST_ERROR(4003, "This username already has already been used. "),
+    USER_EXIST_ERROR(4003, "This username is already taken."),
     USERNAME_NULL_ERROR(4004, "Username can not be empty."),
     PASSWORD_NULL_ERROR(4005, "Password can not be empty."),
     TOKEN_NULL_ERROR(4006, "No token, please log in again."),
     TOKEN_INVALID_ERROR(4007,"Invalid token, please log in again."),
     EMAIL_NULL_ERROR(4008, "Email address can not be empty."),
-    EMAIL_EXIST_ERROR(4009, "This email address has been occupied already."),
+    EMAIL_EXIST_ERROR(4009, "This email address is already in use."),
     GOOGLE_TOKEN_NULL_ERROR(4010, "Google ID Token is empty or does not exist!"),
     GOOGLE_TOKEN_FORMAT_ERROR(4011, "ID Token format is not a valid JWT!"),
     GOOGLE_TOKEN_INVALID_ERROR(4012, "ID Token is invalid or expired!"),
-    GOOGLE_TOKEN_VERIFICATION_EXCEPTION(4013, "Exception occurs during ID Token verification. "),
+    GOOGLE_TOKEN_VERIFICATION_EXCEPTION(4013, "Exception occurs during ID Token verification."),
     ACCOUNT_VERIFIED_ERROR(4014, "This account has already been verified!"),
     WRONG_VERIFICATION_CODE_ERROR(4015, "The verification code is wrong!"),
     ACCOUNT_VERIFICATION_ERROR(4016, "This account did not be verified!"),

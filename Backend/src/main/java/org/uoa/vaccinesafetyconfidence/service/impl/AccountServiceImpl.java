@@ -1,7 +1,6 @@
 package org.uoa.vaccinesafetyconfidence.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -21,7 +20,6 @@ import org.uoa.vaccinesafetyconfidence.pojo.vo.AccountInfoVO;
 import org.uoa.vaccinesafetyconfidence.pojo.vo.LoginVO;
 import org.uoa.vaccinesafetyconfidence.pojo.vo.RegisterVO;
 import org.uoa.vaccinesafetyconfidence.pojo.vo.UserProfileVO;
-import org.uoa.vaccinesafetyconfidence.result.R;
 import org.uoa.vaccinesafetyconfidence.result.ResponseEnum;
 import org.uoa.vaccinesafetyconfidence.service.AccountService;
 import org.uoa.vaccinesafetyconfidence.service.EmailService;
@@ -76,22 +74,32 @@ public class AccountServiceImpl implements AccountService {
         UserAccount userAccount = userAccountMapper.selectOne(userAccountLambdaQueryWrapper);
 
         if (userAccount == null){
-            userAccount = new UserAccount();
-            String password = "Guser" + userGoogleId.substring(userGoogleId.length() - 8);
-            userAccount.setUserPassword(MD5.encrypt(password));
-            userAccount.setUserUsername(generateUniqueUsername(email));
-            userAccount.setUserGoogleId(userGoogleId);
-            userAccount.setUserEmail(email);
-            userAccount.setUserFullName(name);
-            userAccount.setUserAvatarPath(defaultAvatarPath);
-            userAccount.setUserVerified(true);
-            userAccount.setUserRole(2); // 1 for admin, 2 for normal user
+            // 根据Google ID查询数据库账户
+            LambdaQueryWrapper<UserAccount> userAccountLambdaQueryWrapper2 = new LambdaQueryWrapper<>();
+            userAccountLambdaQueryWrapper2.eq(UserAccount::getUserEmail, email);
+            UserAccount accountQueryByEmail = userAccountMapper.selectOne(userAccountLambdaQueryWrapper2);
 
-            userAccountMapper.insert(userAccount);
-            log.info("The user" + userAccount.getUserUsername() + " has registered successfully and has been inserted into the database.");
-            userAccount = userAccountMapper.selectOne(userAccountLambdaQueryWrapper);
+            if (accountQueryByEmail == null){
+                userAccount = new UserAccount();
+                String password = "Guser" + userGoogleId.substring(userGoogleId.length() - 8);
+                userAccount.setUserPassword(MD5.encrypt(password));
+                userAccount.setUserUsername(generateUniqueUsername(email));
+                userAccount.setUserGoogleId(userGoogleId);
+                userAccount.setUserEmail(email);
+                userAccount.setUserFullName(name);
+                userAccount.setUserAvatarPath(defaultAvatarPath);
+                userAccount.setUserVerified(true);
+                userAccount.setUserRole(2); // 1 for admin, 2 for normal user
+
+                userAccountMapper.insert(userAccount);
+                log.info("The user: " + userAccount.getUserUsername() + " has registered successfully and has been inserted into the database.");
+                userAccount = userAccountMapper.selectOne(userAccountLambdaQueryWrapper);
+            } else {
+                accountQueryByEmail.setUserGoogleId(userGoogleId);
+                userAccountMapper.updateById(accountQueryByEmail);
+                userAccount = accountQueryByEmail;
+            }
         }
-
         return generateTokenAndWrapAccountInfo(userAccount);
     }
 
@@ -137,7 +145,7 @@ public class AccountServiceImpl implements AccountService {
         userAccountLambdaQueryWrapper.eq(UserAccount::getUserEmail, email);
         UserAccount userAccount = userAccountMapper.selectOne(userAccountLambdaQueryWrapper);
         if (userAccount == null)
-            throw new BusinessException(ResponseEnum.ACCOUNT_NOTEXIST_ERROR);
+            throw new BusinessException(ResponseEnum.NO_ACCOUNT_ERROR);
         return userAccount;
     }
 
@@ -179,12 +187,21 @@ public class AccountServiceImpl implements AccountService {
             throw new BusinessException(ResponseEnum.EMAIL_NULL_ERROR);
 
         // 判断用户是否已被注册
-        QueryWrapper<UserAccount> accountInfoQueryWrapper = new QueryWrapper<>();
-        accountInfoQueryWrapper.eq("user_username", registerVO.getUserUsername());
+        LambdaQueryWrapper<UserAccount> accountInfoQueryWrapper = new LambdaQueryWrapper<>();
+        accountInfoQueryWrapper.eq(UserAccount::getUserUsername, registerVO.getUserUsername());
         Long count = userAccountMapper.selectCount(accountInfoQueryWrapper);
         if(count != 0) {
-            log.error("the username already exists");
+            log.error("the username already exists!");
             throw new BusinessException(ResponseEnum.USER_EXIST_ERROR);
+        }
+
+        // 检查邮箱是否被使用
+        accountInfoQueryWrapper = new LambdaQueryWrapper<>();
+        accountInfoQueryWrapper.eq(UserAccount::getUserEmail, registerVO.getUserEmail());
+        count = userAccountMapper.selectCount(accountInfoQueryWrapper);
+        if(count != 0) {
+            log.error("the email has been registered!");
+            throw new BusinessException(ResponseEnum.EMAIL_EXIST_ERROR);
         }
 
         // 发送验证码邮件
@@ -220,7 +237,7 @@ public class AccountServiceImpl implements AccountService {
         UserAccount unVerifiedUserAccount = userAccountMapper.selectOne(userAccountLambdaQueryWrapper);
 
         if (unVerifiedUserAccount == null)
-            throw new BusinessException(ResponseEnum.ACCOUNT_NOTEXIST_ERROR);
+            throw new BusinessException(ResponseEnum.NO_ACCOUNT_ERROR);
         if (unVerifiedUserAccount.isUserVerified())
             throw new BusinessException(ResponseEnum.ACCOUNT_VERIFIED_ERROR);
 
@@ -250,7 +267,7 @@ public class AccountServiceImpl implements AccountService {
 
         if(userAccount == null) {
             log.error("The target username: " + loginVO.getUsername() + " does not exist.");
-            throw new BusinessException(ResponseEnum.ACCOUNT_NOTEXIST_ERROR);
+            throw new BusinessException(ResponseEnum.NO_ACCOUNT_ERROR);
         }
 
         if(!userAccount.isUserVerified())
