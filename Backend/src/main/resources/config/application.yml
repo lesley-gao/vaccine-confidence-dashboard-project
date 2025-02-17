@@ -1,0 +1,33 @@
+frontend:
+  avatarPath:
+    default: /avatars/default-avatar.jpg
+
+
+
+spring:
+  profiles:
+    active: Your-Config # The suffix of the configuration file name, e.g. application-dev.yml -> dev
+  application:
+    name: vaccine-safety-confidence
+  mybatis-plus:
+    configuration:
+      # MyBatis configuration
+      map-underscore-to-camel-case: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  mail:
+    host: smtp.example.com # mail server host
+    port: Mail-Server-Port # mail server port
+    username: Mail-Server-Username # mail server username
+    password: Mail-Server-Password # mail server password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

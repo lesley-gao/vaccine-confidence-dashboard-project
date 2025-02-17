@@ -1,0 +1,37 @@
+#  Google Cloud Platform OAuth Client ID for Google Sign-In, must be aligned with the one in the frontend
+googleCloudPlatform:
+  clientId: "426797470059-p1c3ev6op2dsf8ladiprpmu15sjrh2eq.apps.googleusercontent.com"
+
+server:
+  port: 8050
+
+spring:
+  jackson:
+    time-zone: UTC # Time zone
+    date-format: yyyy-MM-dd HH:mm:ss
+  datasource: # mysql datasource configuration
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # replace the following with your database URL, username and password
+    url: jdbc:mysql://Your-Database-URL.example.com:[PORT]/miles_vax_confidence?createDatabaseIfNotExist=true
+    username: Your-Database-Username
+    password: Your-Database-Password
+  sql:
+    init:
+      schema-locations: classpath:db/schema.sql
+      mode: always
+  kafka:
+    bootstrap-servers: Your-Kafka-URL.example.com:[PORT] # Kafka server URL
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: email-notification-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+# Toggle the following to enable or disable the API documentation
+springdoc:
+  api-docs:
+    enabled: false
+
