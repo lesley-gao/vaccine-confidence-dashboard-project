@@ -86,7 +86,7 @@ To run this project, start by executing the script to clear the database and gen
 
 In the frontend terminal, simply execute `npm install` and `npm run dev`. Once you've completed these steps, you can start exploring the project.
 
-## API Keys & Environment Variables 
+## API Keys and Environment Variables 
 
 Below is the required `.env` variables for the front-end:
 
