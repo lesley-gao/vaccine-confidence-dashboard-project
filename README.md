@@ -1,13 +1,15 @@
 # A dashboard platform to visualize vaccine-related data and public sentiment on social media regarding vaccine safety
-
+![image](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) 
 ![image](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) 
-![image](https://img.shields.io/badge/Node%20js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white) 
 ![image](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
 ![image](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E) 
 ![image](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) 
 ![image](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white) 
 ![image](https://img.shields.io/badge/axios-671ddf?&style=for-the-badge&logo=axios&logoColor=white)  
-![image](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white) 
+![image](https://img.shields.io/badge/Plotly-239120?style=for-the-badge&logo=plotly&logoColor=white)
+![image](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+![image](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![image](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white)
 
 ## Table of Contents 
 
@@ -22,27 +24,27 @@
 - [Collaborators](#collaborators)
  
 ## About
+
 VaccineView serves as a bridge between public health data and community needs, making vaccine-related information more accessible and understandable for all New Zealanders.
 
 Users can access consolidated vaccine data, locate vaccination services, gain insights into community-level vaccine confidence, and monitor public sentiment on vaccine safety. They can also create personal accounts and subscribe to updates for specific vaccines.
 
 ## Main Features
 
-Our Dashboard page visualizes vaccine and disease data through nine carefully selected vaccine-related indicators, presenting interactive charts that track metrics such as vaccine efficacy, vaccine coverage rates, R0 rate, and disease cases in New Zealand over time. All this information is sourced from official health organizations, including the Ministry of Health, Health New Zealand, ESR, World Health Organisation, and Healthpoint. 
+VaccineView's core functionalities span five key areas. 
 
-This is complemented by a detailed survey data analysis system that presents vaccine confidence information with demographic breakdowns, including attitude comparisons across different years in different demographic groups. 
+- provides a comprehensive dashboard for several indicators about the vaccines and their related diseases.
+- tracks real-time sentiment and visualizes topic trends through word clouds and engagement metrics.
+- enables visualization of survey data with demographic breakdowns and time-series comparisons.
+- offers an interactive map of vaccination providers with search capabilities and Google Maps integration.
+- user management system handles account creation, authentication, and subscription preferences for email notifications about vaccine updates.
 
-Our platform also includes a robust location-based service component that displays vaccination providers across New Zealand through an interactive map, making it easy for users to locate vaccination facilities for a specific vaccine in their area. 
-
-A crucial feature of the platform is the social media sentiment analysis on our Social Media page. We continuously monitor conversations about vaccines on platforms like Reddit and X, visualizing these discussions through word clouds and breaking down the sentiment into positive, neutral, and negative reactions. This gives users a real-time pulse on public vaccine discussions and provides health officials with insights about general public thoughts and concerns. 
-
-To keep users informed, our platform includes a subscription service that allows users to receive regular updates on vaccine data that matters to them. 
+These components work together to create a comprehensive platform that serves both healthcare professionals and the general public, providing timely and actionable insights into vaccine confidence trends.
 
 ## UI Preview
 
-<div style="display: flex; gap: 10px; margin-top: 10px;">
-  <img src="https://github.com/user-attachments/assets/15a80e96-df67-49ea-9a97-a105d0f790d9" width="400" />
-  <img src="https://github.com/user-attachments/assets/d9334796-803c-428f-88dd-d1b1612d304f" width="400" /> 
+<div style="display: flex; gap: 10px; margin-top: 10px; ">
+  <img src="https://github.com/user-attachments/assets/15a80e96-df67-49ea-9a97-a105d0f790d9" width="800" />
 </div>
  
 <div style="display: flex; gap: 10px; margin-top: 10px;">
@@ -56,7 +58,8 @@ To keep users informed, our platform includes a subscription service that allows
   </div>
 </div>
 
-For the demo video, please refer to [this link](https://drive.google.com/file/d/1AZYAXiMg99GJSVliujlR63u4uSDmDkBP/view?usp=drive_link).
+
+For the demo video, please refer to **[the link here](https://drive.google.com/file/d/1AZYAXiMg99GJSVliujlR63u4uSDmDkBP/view?usp=drive_link)**.
 
 ## Introduction of Webpages
 
@@ -80,11 +83,19 @@ For the demo video, please refer to [this link](https://drive.google.com/file/d/
 
 ## Quick Start
 
-Prior to commencing the project initialization, ensure that you have obtained the API private key file named `admin.json`. Then place this file in the `backend/src/` directory, the same level with `app.js`.
-
-To run this project, start by executing the script to clear the database and generate example records in the database. Navigate to the backend folder and execute `npm install` to install the module dependencies. Then run `npm run generate` to generate records in the database (this command may take a few minutes depending on your system). Finally, run `npm run dev`.
-
-In the frontend terminal, simply execute `npm install` and `npm run dev`. Once you've completed these steps, you can start exploring the project.
+1. Clone the repository 
+2. Open the project in VSCode 
+3. Open the terminal 
+4. Navigate to the `frontend` folder and execute:
+```
+npm install
+npm run dev
+```
+4. Navigate to the `backend` folder and execute:
+```
+npm install
+npm run dev
+``` 
 
 ## API Keys and Environment Variables 
 
